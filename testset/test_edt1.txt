@@ -1,0 +1,8 @@
+1er jeu de test (classique) : EDT 2verts 0or 0rouge
+?ue1=algav&ue2=dlp&ue3=il&ue4=mlbda&ue5=ares
+
+2eme jeu de test(excessif) : EDT 59verts 0or 0rouge
+?nb=5&ue1=algav&ue2=mlbda&ue3=dlp&ue4=il&ue5=lrc
+
+3eme jeu de test(pam) : EDT 0verts 0or 0rouge
+?nb=5&ue1=algav&ue2=dlp&ue3=rtel&ue4=signal&ue5=vlsi1

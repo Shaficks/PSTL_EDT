@@ -27,10 +27,10 @@ Notre but est de pouvoir dimensionner à l’avance le nombre de groupes de TD/T
 
 #Avancée du projet - [0%]
 ####Tâches réalisées :
-* Comprendre l’architecture et le fonctionnement de l’application existante - [70%]
-* Nettoyage et factorisation de code - [0%]
-* Amélioration de la gestion des contraintes (suivant les spécialités notamment) - [0%]
+* Comprendre l’architecture et le fonctionnement de l’application existante - [100%]
+* Nettoyage et factorisation de code - [70%]
+* Amélioration de la gestion des contraintes (suivant les spécialités notamment) - [40%]
 * Amélioration du design - [0%]
 * Migration d’une base de données MySQL vers PostgreSQL - [0%]
-* Nombreux tests et vérifications afin d’éliminer tout risque de bug (application mise en place dès la rentrée) - [0%]
+* Nombreux tests et vérifications afin d’éliminer tout risque de bug (application mise en place dès la rentrée) - [50%]
 * Déploiement sur le site du Master d’Informatique - [0%]
