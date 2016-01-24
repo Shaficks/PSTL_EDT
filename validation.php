@@ -1,8 +1,5 @@
-
 <?php
-
     session_start();
-
     $c = $_SESSION['choix'];
     
     if(isset($_POST['week']))
@@ -13,7 +10,6 @@
     
     //Récupérer la valeur de week qui est rien d'autre que le tableau contenant l'EDT
     $week = $_SESSION['week'];
-
     //Récupération du numéro d'étudiant et de sa spécialité
     $num = $_SESSION['num'];
     $spe = $_SESSION['spe'];
@@ -53,7 +49,6 @@
         echo 'Vous avez déjà enregistré vox voeux. Vous pourrez éventuellement les modifier en septembre lors de la pré-rentrée. <br>';
         exit();
     }
-
     //On enregistre l'étudiant
     $sql = "INSERT INTO ListeEtudiants(numero, nom, prenom, mail, spe, voeux) VALUES(" . $_SESSION['num'] . ", '" . $_SESSION['nom'] . "', '" . $_SESSION['prenom'] . "', '" . $_SESSION['mail'] . "', '" . $_SESSION['spe'] . "', 1)";
     mysql_query($sql) or die(mysql_error());
@@ -62,21 +57,17 @@
     // on écrit la requête sql dans ListEtudiants
     $sql = "UPDATE ListeEtudiants SET voeux=1, " . $ue . " WHERE numero=$num";
     mysql_query( $sql ) or die( mysql_error() );
-
     // on écrit la requête sql dans la SPE, ce qui donne le rang d'enregistrement des voeux
     $sql = "INSERT INTO $spe(numetu) VALUES($num)";
     mysql_query($sql) or die( mysql_error() );
-
     // on écrit la requête sql dans Master, ce qui donne le rang d'enregistrement des voeux (au sein du master)
     $sql = "INSERT INTO Master(numetu) VALUES($num)";
     mysql_query($sql) or die( mysql_error() );
-
     // on écrit la requête sql dans UEGroupes : incrementer le nb d'etudiant dans chaque groupe
     for ($i=1; $i<6; $i++) {
         $sql = "UPDATE UEGroupes SET effectif = effectif+1 WHERE groupe = '".$_SESSION['ue'.$i].$_SESSION['ue'.$i.'gpe']."'";
         mysql_query($sql) or die( mysql_error() );
     }
-
     // on récupère nom, prénom et mail
     $sql = "SELECT * FROM ListeEtudiants WHERE numero=$num";
     $requete = mysql_query($sql) or die ( mysql_error() );
@@ -130,18 +121,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <title>UPMC, Master Informatique : Saisie des voeux d\'UE du S1</title>
-
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
       </head>
-
     <body>
-
-
     <h3>
         UPMC : Master Informatique
     </h3>
-
     <table>
         <tr>
             <td width="25%"></td>
@@ -200,14 +185,11 @@
         </td>
     </tr>
     </table>
-
     <br> ';
-
         $message = $message . $week;
     
         echo $message;
     
-
         if ($spe == 'ANDROIDE') {
             $mail = 'ophelie.dacosta@ufr-info-p6.jussieu.fr';
         }
@@ -229,7 +211,6 @@
         else {
             $mail = 'emilie.auger@ufr-info-p6.jussieu.fr';
         }
-
         $to  = $mail  . ', ' . $donnees['mail'] . ', m1voeuxs1@gmail.com';
     
         // Sujet
@@ -247,13 +228,10 @@
         mail($to, $subject, $message, $headers);
         
         $_SESSION['message'] = $message;
-
     ?>
 
     <script>
-        alert("Imprimer cette page et l\'apporter le jour des inscriptions.");
-
-        alert("La saisie des voeux est finie, vous pouvez quitter le site web.");
+        alert("La saisie des voeux est finie, vous devez télécharger la version imprimable et choisir un EDT idéal pour finaliser votre pré-inscription.");
     </script>
 
     <br>
@@ -279,7 +257,6 @@
                         if (i < 5) {
                             str = str + "&";
                         }
-
                     }
             //On fait appel à la page edt.php avec les paramètres dans la chaine str
             location.href = "edt_ideal.php?"+str;
@@ -296,4 +273,3 @@
 
 
 </html>
-

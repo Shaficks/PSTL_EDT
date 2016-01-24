@@ -44,7 +44,6 @@ for ($i = 1; $i < 5; $i++) //changer ce 5 en nb_suivi
             Contenu duplique en local dans js/jquery-latest.js  -->
             <script src="js/jquery-latest.js"></script> <!-- copie locale de jquery(realisee en 2014) -->
             <script type="text/javascript" src="js/utils.js"></script>
-            <script type="text/javascript" src="js/descriptions.js"></script>
             <script type="text/javascript" src="js/choix_ues.js"></script>
             <script type="text/javascript" src="js/descriptions.js"></script>
             <script type="text/javascript" src="js/calendrier.js"></script>
@@ -76,7 +75,11 @@ for ($i = 1; $i < 5; $i++) //changer ce 5 en nb_suivi
         <h1>UPMC : Master Informatique</h1>
         <h3>Site de saisie des voeux d'emploi du temps</h3>
 
-        <span class="note" id="description_master" > </span>
+        <span class="note" id="description_master" > </span
+
+        <div class="rollback" id="back_index"><!-- On est oblige de le mettre hors du formulaire sinon uncaught exception (pris pour un boutton de soumission du formulaire -> pb dans l'affichage )-->
+            <button class="boutton" id="bbackindex" onclick="javascript:rollback()">Retour</button>    
+        </div>
 
         <span id="span_tab_ues"><!-- une span pour plus de flexibilite dans l'affichage avec css-->
 
@@ -91,7 +94,7 @@ for ($i = 1; $i < 5; $i++) //changer ce 5 en nb_suivi
                     <?php
                     $choix_ues = $master["$spe"];
                     foreach ($choix_ues as $key => $value) {
-                        sort($value); //ordre alphabetique sur la liste d'ues
+                        sort($value); //ordre alphabetique sur la liste d'ues 
                         foreach ($value as $ue)
                             if (!in_array($ue, $ue_valides)) //retirer les ues deja valides pour un redoublant
                                 if ($key == 'oblig')
@@ -111,13 +114,8 @@ for ($i = 1; $i < 5; $i++) //changer ce 5 en nb_suivi
                 </fieldset>
                 <div id="choices"></div>
 
-                <div class="rollback" id="back_index">
-                    <button class="boutton" id="bbackindex" onclick="javascript:rollback()">Retour</button>    
-                </div>
-                
                 <div id="edts"></div>
             </form>
-
         </span>
     </body>
 </html>

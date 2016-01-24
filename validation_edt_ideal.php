@@ -15,6 +15,7 @@
         $choix[$i] = [$tabEdt[2*$i], $tabEdt[2*$i+1]];
     }
     
+
     //Préparation des variables de Session qui vont être stockées dans la base de données
     //UEs et groupes
     for ($i=1; $i<6; $i++) {
@@ -31,6 +32,8 @@
         $tab[$i-1] = $_SESSION['ue'.$i].'-'.$_SESSION['ue'.$i.'gpe'];
     }
     
+   
+    
     require('config.php'); // On réclame le fichier
     
     $nb = $_SESSION['num'];
@@ -40,6 +43,8 @@
              "VALUES('$nb','$tab[0]','$tab[1]','$tab[2]','$tab[3]','$tab[4]')";
     mysql_query($sql) or die( mysql_error() );   
     
+
+    session_destroy();
     mysql_close();
     ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
@@ -56,11 +61,12 @@
 
 
     <h3>
-        UPMC : Master Informatique
+        UPMC : Master Informatique - Pré-inscription validée <br/>
+        Toute demande de modification se fera directement auprès des responsables le jour des inscriptions.
     </h3>
 
     <script> 
-       alert("La saisie des voeux est finie, vous pouvez quitter le site web.");
+       alert("Votre pré-inscription est finalisée, vous pouvez quitter le site web.");
     </script>
 
     </body>

@@ -119,8 +119,8 @@ function eraseEDTs() {
 
 function chooseEDT(form) { //le parametre form ne sera pas utilise
     var edt = $('input[name="edt"]:checked').val();
-    alert("edt=" + edt);
+//    alert("edt=" + edt);
     edt=edt.replace(/,/g, "%2C");
-    alert("edt=" + edt);
-    window.location.href = "soumission.php?edt=" + edt;
+    //alert("edt=" + edt);
+    window.location.href = "confirmation.php?edt=" + edt;
 }

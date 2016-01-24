@@ -122,6 +122,7 @@ function edt(choix) {
                         pds = poids(l); //Appel de la fonction calculant le poids
                         if (pds[0] == 1) {
                             listeEDT1.push([pds[1], l]); //Si c'est un EDT vert, on le rajoute a listeEDT1 sous le format(s,liste des UEsl) 
+                            //alert(JSON.stringify(listeEDT1)); // pk null au lieu de pds (s)
                             // s est le poids precis de la liste l (edt trouve)
                         } else {
                             if (pds[0] == 2) { //Si c'est un orange, on le rajoute a listeEDT2
