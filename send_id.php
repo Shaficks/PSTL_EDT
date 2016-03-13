@@ -36,6 +36,7 @@ function send_mail_etu() {
         echo "Une erreur s'est produite!";
         exit(); //sortie 
     }
+    
 }
 
 send_mail_etu();
