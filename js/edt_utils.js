@@ -1,9 +1,24 @@
+//Tri des UEs selon leur poids local (tri croissant) 
+function sort_choixpoids(choix_poids) {
+    var tmp = [], rep = true;
+    while (rep) {
+        rep = false;
+        for (i = 0; i < choix_poids.length - 1; i++)
+            if (choix_poids[i][0] > choix_poids[i + 1][0]) {
+                tmp = choix_poids[i];
+                choix_poids[i] = choix_poids[i + 1];
+                choix_poids[i + 1] = tmp;
+                rep = true;
+            }
+    }
+}
+
 //Reçoit une liste l contenant des paires (s,l) : s calculée par la fct poids
 function rearrange(l, d, f) {
     var piv = l[f][0]; //C'est la variable s calculée dans la fonction poids
     var k = d;
     var tmp = [];
-    for (var i=d; i<f; i++) {
+    for (var i = d; i < f; i++) {
         //On teste la variable s calculée dans la fonction poids
         if (l[i][0] > piv) {
             tmp = l[i];
@@ -18,64 +33,44 @@ function rearrange(l, d, f) {
     return k;
 }
 
-//Tri en fonction du poids ? 
-//Tri dichotomique récursif on faisant appel à la fonction rearrange - A REVOIR !!!!!!!!!
+//Tri en fonction du poids (QUICKSORT)
 function tri(l, d, f) {
     if (d < f) {
         var q = rearrange(l, d, f);
-        tri(l, d, q-1);
-        tri(l, q+1, f);
+        tri(l, d, q - 1);
+        tri(l, q + 1, f);
     }
 }
 
-//Fonction de calcul de poids
+//Fonction de calcul du poids d'un edt
 function poids(l) {
-    //json_encode : Retourne la représentation JSON d'une valeur
-    var groupes = GRPES;
-    var i = 0;
-    var g = ['','','','',''];
-    //Ici les groupes sont gérés comme des chaines de caractères
-    //Exemple = 'algav' + '1' donne algav1
-    for (i=0; i<5; i++) {
-        g[i] = l[i][0]+l[i][1];
-    }
-    
-    var m = 0; //Contiendra l'effectif le plus grand
-    var p = [0,0,0,0,0]; //Tableau contenant les poids (effectifs des groupes)
-    for (i=0; i<5; i++) {
-        p[i] = groupes[g[i]];
-        //Fonction parseInt : parse le premier entier rencontré
-        //Attention, il faut que l'entier soit la première chose rencontrée dans la chaine
-        //Si on passe "10" et 16, c'est le 16 qui sera prioritaire
-        //Pour les redoublants, les UEs sup ne sont pas traitées
-        if (parseInt(p[i]) > m && l[i][0].substring(0,4) != 'sup') {
-        	m = parseInt(p[i]);
-       } 
-    }
-	    
-    var res = [];
-    var s = 0.0;
-    //Si on est dans le cas VERT
-    if (m > 27) {
-        for (i=0; i<5; i++) {
-            //s va contenir la somme des différences entre 27 et p[i]
-            s += 27 - p[i]
-        }
-        res = [3, s]; //3 = vert
-    }
-    else {
-        s = 1.0
-        for (i=0; i<5; i++) {
-            //s va contenir le produit des différences entre 28 et p[i]
-            s *= 28 - p[i]
-        }
-        if (m > 24) {     
-            res = [2, s]; //2 = orange
-        }
+    //alert("edt_utils/l : "+l); //Affichage format initial //debug
+    var groupes = GRPES; //issu de la recup depuis la bd dans choix_ues.php et de forme : [algav1 =>5, Il2=>4] ou 5 est l'effectif du groupe algav1    
+    l = bondAll(unbindAll(l)); //Maj format de l : dlp-1 -> dlp1 // pour directement "demaper"(recuperer l'effectif depuis) groupes
+    //console.log("l : " + l + "\nGRPES : " + JSON.stringify(GRPES));//Debug
+
+    var capa = 25; //Max capacite groupe
+    var pf = 1, geff = []; //pf: poids fin de l, geff:Tableau contenant les effectifs des groupes 
+    for (var i = 0, sup = 0; i < l.length; i++)
+        if (l[i].substring(0, 3) == "sup" || l[i]=='Conferences1') //Ne pas tenir compte des effectifs des conferences (vu comme fictive(une supX ue))
+            sup++;
         else {
-            res = [1, s]; //1 = rouge
+            var eff = parseInt(groupes[l[i]]) || 0; // ||0  will convert "falsey" values to 0. The "falsey" values are:false,null,undefined,0,"",NaN
+            //Imporant ||0: si un groupe n'existe pas en bd(parcequ'il n'a jamais ete choisi) : effectif=0 (evite des valeur Nan ou null lors du calcul de p)
+            geff[i - sup] = eff;
+            pf *= (capa - eff); //pf(poids fin)=moyenne geometrique du nombre de places restantes des groupes  //POIDS STANDARDISE POUR TOUTES LES CLASSES D'EDT ET REPRESENTANT LE PRODUIT DU NOMBRE DE PLACES RESTANTES DE CHAQUE GROUPE
         }
-    }
-    //On retourne notre tableau res avec l'id couleur et le s calculé
+
+    var maxeff = Math.max.apply(Math, geff);
+    //console.log("geff : [" + geff + "] & maxeff=" + maxeff + " poidsfin=" + pf + "\n\n"); //Debug
+
+    var res = []; //tableau resultat de la forme : [classe ,pf] ou pf est le poids fin de l'edt l & classe sa classe(type d'edt parmi (vert, orange, rouge))
+
+    if (maxeff > capa) //Si au moins un groupe est plein : edt rouge (classe 2)    
+        res = [2, pf];
+    else //edt vert (classe 1)    
+        res = [1, pf];
+
     return res;
 }
+

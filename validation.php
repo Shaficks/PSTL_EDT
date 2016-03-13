@@ -1,275 +1,206 @@
 <?php
-    session_start();
-    $c = $_SESSION['choix'];
-    
-    if(isset($_POST['week']))
-        $_SESSION['week'] = $_POST['week'];
-    
-    if(isset($_POST['planning']))
-        $_SESSION['planning'] = json_decode($_POST['planning'], true);
-    
-    //Récupérer la valeur de week qui est rien d'autre que le tableau contenant l'EDT
-    $week = $_SESSION['week'];
-    //Récupération du numéro d'étudiant et de sa spécialité
-    $num = $_SESSION['num'];
-    $spe = $_SESSION['spe'];
-    
-    
-    //$_SESSION['planning'] = $_POST['planning'];
-    
-    
-    $tab = [[],[],[],[],[]]; //Contiendra les paires (UE, groupe) qui seront stockées dans la base
-    $ue = ""; //Sert à accéder aux champs des ues et groupes dans les requêtes dans la base
-    for ($i=1; $i<6; $i++) {
-        $tab[$i-1] = [$_SESSION['ue'.$i], $_SESSION['ue'.$i.'gpe']];
-        $ue = $ue . "ue" . $i . "='" . $tab[$i-1][0] . "', ue" . $i . "gpe=" . $tab[$i-1][1];
-        if ($i<5) {
-            $ue = $ue . ", ";
-        }
+session_start();
+
+$CRITEFF = 25; //Effectif critique 
+
+$choix = $_SESSION['choix'];
+$num = $_SESSION['num'];
+$mailetu = $_SESSION['mail'];
+$spe = $_SESSION['spe'];
+$nom = $_SESSION['nom'];
+$prenom = $_SESSION['prenom'];
+
+
+if(isset($_GET['planning']))
+        $_SESSION['planning'] = json_decode($_GET['planning'], true);
+
+/* print_r($choix); //Debug 
+  echo "<br/>"; //Debug
+  print_r($_SESSION['FINALEDT']); //Debug
+  echo " & his.size =" . sizeof($_SESSION['FINALEDT']); //Debug
+  echo "<br/>"; //Debug */
+
+require_once('config.php'); // Acces Base de donnees
+//On verifie que les voeux n'aient pas deja ete faits
+$sql = "SELECT * FROM ListeEtudiants WHERE numero=" . $_SESSION['num'] . " AND voeux=1";
+$requete = mysql_query($sql) or die(mysql_error());
+if (mysql_num_rows($requete) > 0) {
+    echo "<div id ='enddiv'>"
+        . "<p id='endp'>"
+                . "<span id='endspan'>Vous avez d&eacute;jà enregistr&eacute; vox voeux.<br>"
+        . " Vous pourrez &eacute;ventuellement les modifier en septembre lors de la pr&eacute;-rentr&eacute;e."
+                . "</span> <br>";
+        echo "<a href='http://www-master.ufr-info-p6.jussieu.fr/lmd'>Retour sur le site du master informatique de l'Upmc</a> "
+        . "</p>"
+    . "</div>";
+    exit();
+}
+
+//On ecrit la requete sql dans ListEtudiants : on enregistre l'etudiant
+$sql = "INSERT INTO ListeEtudiants(numero, nom, prenom, mail, spe, voeux) VALUES(" . $num . ", '" . $nom . "', '" . $prenom . "', '" . $mailetu . "', '" . $spe . "', 0)";
+mysql_query($sql) or die(mysql_error());
+
+$ue = "";
+for ($i = 1; $i <= sizeof($_SESSION['FINALEDT']) / 2; $i++) {
+    $ue .= "ue" . $i . "='" . $_SESSION['FINALEDT']['ue' . $i] . "', ue" . $i . "gpe=" . $_SESSION['FINALEDT']['ue' . $i . 'gpe'];
+    if ($i < sizeof($_SESSION['FINALEDT']) / 2)
+        $ue .= ", ";
+}
+//echo $ue; //Debug
+//Ici on mets a jour les champs UEi, UEigpe et voeux de la base dans ListEtudiants
+$sql = "UPDATE ListeEtudiants SET voeux=1, " . $ue . " WHERE numero=$num";
+mysql_query($sql) or die(mysql_error());
+
+//On ecrit la requete sql dans la SPE, ce qui donne le rang d'enregistrement des voeux
+$sql = "INSERT INTO $spe(numetu) VALUES($num)";
+mysql_query($sql) or die(mysql_error());
+
+//On recupere rang
+$sql = "SELECT * FROM $spe WHERE numetu=$num";
+$requete = mysql_query($sql) or die(mysql_error());
+$rang = mysql_fetch_array($requete)['rang'];
+
+$_SESSION['rang'] = $rang;
+
+//On ecrit la requete sql dans Master, ce qui donne le rang d'enregistrement des voeux (au sein du master)
+$sql = "INSERT INTO Master(numetu) VALUES($num)";
+mysql_query($sql) or die(mysql_error());
+
+//On ecrit la requete sql dans UEGroupes : incrementer le nb d'etudiant dans chaque groupe
+$effectif = [];
+for ($i = 1; $i <= sizeof($_SESSION['FINALEDT']) / 2; $i++) {
+    $sql = "SELECT * FROM UEGroupes WHERE groupe='" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+    $requete = mysql_query($sql) or die(mysql_error());
+    if (mysql_num_rows($requete) > 0) {
+        $sql = "UPDATE UEGroupes SET effectif = effectif+1 WHERE groupe = '" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+        mysql_query($sql) or die(mysql_error());
+    }elseif($_SESSION['FINALEDT']['ue' . $i]!='Conferences'){//Ne pas tenir compte des conferences pour le calcul des effectifs
+        $sql = "INSERT INTO UEGroupes(groupe,effectif) VALUES('" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "',0)";
+        //echo "sql:$sql";//Debug : all right but 'Conference 0' in db
+        mysql_query($sql) or die(mysql_error());
+        //Update apres creation des groupes auparavant inexistant dans la base
+        $sql = "UPDATE UEGroupes SET effectif = effectif+1 WHERE groupe = '" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+        mysql_query($sql) or die(mysql_error());
     }
-    $_SESSION['liste_ues'] = $tab;
-    
-    require('config.php'); // On réclame le fichier
-    
-    // remplissge des groupes
-    $effectif = [0,0,0,0,0];
-    for ($i=1; $i<6; $i++) {
-        $sql = "SELECT * FROM UEGroupes WHERE groupe='".$_SESSION['ue'.$i].$_SESSION['ue'.$i.'gpe']."'";
-        $requete = mysql_query($sql) or die( mysql_error() );
-        $donnees = mysql_fetch_array($requete);
-        $effectif[$i-1] = $donnees['effectif']; //récupération des effectifs
-    }
-    
-    $sql = "SELECT * FROM ListeEtudiants WHERE numero=".$_SESSION['num']." AND voeux=1";
-    // On vérifie que les voeux n'aient pas déjà été faits
-    $requete = mysql_query($sql) or die ( mysql_error() );
-    
-    if(mysql_num_rows($requete) > 0)
-    {
-        echo 'Vous avez déjà enregistré vox voeux. Vous pourrez éventuellement les modifier en septembre lors de la pré-rentrée. <br>';
-        exit();
-    }
-    //On enregistre l'étudiant
-    $sql = "INSERT INTO ListeEtudiants(numero, nom, prenom, mail, spe, voeux) VALUES(" . $_SESSION['num'] . ", '" . $_SESSION['nom'] . "', '" . $_SESSION['prenom'] . "', '" . $_SESSION['mail'] . "', '" . $_SESSION['spe'] . "', 1)";
-    mysql_query($sql) or die(mysql_error());
-    
-    //Ici on mets à jour les champs UEi, UEigpe et voeux de la base
-    // on écrit la requête sql dans ListEtudiants
-    $sql = "UPDATE ListeEtudiants SET voeux=1, " . $ue . " WHERE numero=$num";
-    mysql_query( $sql ) or die( mysql_error() );
-    // on écrit la requête sql dans la SPE, ce qui donne le rang d'enregistrement des voeux
-    $sql = "INSERT INTO $spe(numetu) VALUES($num)";
-    mysql_query($sql) or die( mysql_error() );
-    // on écrit la requête sql dans Master, ce qui donne le rang d'enregistrement des voeux (au sein du master)
-    $sql = "INSERT INTO Master(numetu) VALUES($num)";
-    mysql_query($sql) or die( mysql_error() );
-    // on écrit la requête sql dans UEGroupes : incrementer le nb d'etudiant dans chaque groupe
-    for ($i=1; $i<6; $i++) {
-        $sql = "UPDATE UEGroupes SET effectif = effectif+1 WHERE groupe = '".$_SESSION['ue'.$i].$_SESSION['ue'.$i.'gpe']."'";
-        mysql_query($sql) or die( mysql_error() );
-    }
-    // on récupère nom, prénom et mail
-    $sql = "SELECT * FROM ListeEtudiants WHERE numero=$num";
-    $requete = mysql_query($sql) or die ( mysql_error() );
+    $sql = "SELECT * FROM UEGroupes WHERE groupe='" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+    $requete = mysql_query($sql) or die(mysql_error());
     $donnees = mysql_fetch_array($requete);
-    
-    // on récupère rang
-    $sql = "SELECT * FROM $spe WHERE numetu=$num";
-    $requete = mysql_query($sql) or die ( mysql_error() );
-    $rang = mysql_fetch_array($requete)['rang'];
-   
-    $_SESSION['rang'] = $rang;
-    
-    mysql_close();
-    
-    //Récupération des groupes
-    $gpe = ['','','','',''];
-    $i=1;
-    $j=0;
-    while ($i<6) {
-        if (substr($_SESSION['ue'.$i],0,3) == 'sup') {
-            $i++;
-        }
-        else {
-            $gpe[$j] = $gpe[$j] . $_SESSION['ue'.$i.'gpe'];
-            if ($effectif[$i-1] > 27) {
-                $gpe[$j] = $gpe[$j] . '  (complet)';
-            }
-            $i++;
-            $j++;
-        }
-    }
-    //Récupération des ues
-    $ues = ['','','','',''];
-    $i=1;
-    $j=0;
-    while ($i<6) {
-        if (substr($_SESSION['ue'.$i],0,3) == 'sup') {
-            $i++;
-        }
-        else {
-            $ues[$j] = $ues[$j] . $_SESSION['ue'.$i];
-            $i++;
-            $j++;
-        }
-    }
-    
-    
-    $message = '
+    $effectif[$i - 1] = $donnees['effectif'];
+}
+//print_r($effectif); //Debug
+//Fermeture connexion base de donnees
+mysql_close();
+
+//Liste finale des ues et des groupes
+$ues = [];
+$gpe = [];
+for ($i = 1; $i <= sizeof($_SESSION['FINALEDT']) / 2; $i++) {
+    $ues[$i - 1] = '' . $_SESSION['FINALEDT']['ue' . $i];
+    $gpe[$i - 1] = '' . $_SESSION['FINALEDT']['ue' . $i . 'gpe'];
+    if ($effectif[$i - 1] > $CRITEFF)
+        $gpe[$i - 1] = $gpe[$i - 1] . '  (complet)';
+}
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
-        <title>UPMC, Master Informatique : Saisie des voeux d\'UE du S1</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-      </head>
-    <body>
-    <h3>
-        UPMC : Master Informatique
-    </h3>
-    <table>
-        <tr>
-            <td width="25%"></td>
-            <td> Dossier n&deg; : </td>
-            <td> ' . $num .' </td>
-            <td width="25%"> </td>
-            <td> ' . date("d.m.y") .' </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> Etudiant : </td>
-            <td> '. $donnees['prenom']. '  ' . $donnees['nom'] .' </td>
-            <td></td>
-            <td> ' . date("H:i:s") . ' </td>
-        </tr>
-        <tr> <td> <br> </td> <td> <br> </td> <td> <br> </td>  </tr>
-        <tr>
-            <td> </td>
-            <td> Sp&eacute;cialit&eacute; : </td>
-            <td> ' . $spe . ' </td>
-            <td> </td>
-            <td> Rang : ' . $rang . ' </td>
-        </tr>
-    </table>
-    <br>
-    <table>
-    <tr>
-        <td width="25%"></td>
-        <td>
-            <table border=1>
-                <tr>
-                    <td> Liste des UE </td>
-                    <td> Groupe de TD/TME </td>
-                </tr>
-                <tr>
-                    <td align="center"> ' . strtoupper($ues[0]) . ' </td>
-                    <td align="center"> '. $gpe[0] .' </td>
-                </tr>
-                <tr>
-                    <td align="center">  ' .  strtoupper($ues[1]) . ' </td>
-                    <td align="center">  ' . $gpe[1] .' </td>
-                </tr>
-                <tr>
-                    <td align="center">  ' .  strtoupper($ues[2]). ' </td>
-                    <td align="center">  ' .  $gpe[2] . ' </td>
-                </tr>
-                <tr>
-                    <td align="center">  ' .  strtoupper($ues[3]). ' </td>
-                    <td align="center">  ' .  $gpe[3] . ' </td>
-                </tr>
-                <tr>
-                    <td align="center">  ' .  strtoupper($ues[4]). ' </td>
-                    <td align="center">  ' .  $gpe[4] . ' </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    </table>
-    <br> ';
-        $message = $message . $week;
-    
-        echo $message;
-    
-        if ($spe == 'ANDROIDE') {
-            $mail = 'ophelie.dacosta@ufr-info-p6.jussieu.fr';
-        }
-        elseif ($spe == 'BIM' or $spe == 'SAR') {
-            $mail = 'alienor.leconte@ufr-info-p6.jussieu.fr';
-        }
-        elseif ($spe == 'DAC' or $spe == 'IMA') {
-            $mail = 'geraldine.bompard@ufr-info-p6.jussieu.fr';
-        }
-        elseif ($spe == 'RES') {
-            $mail = 'dominique.trouve@lip6.fr';
-        }
-        elseif ($spe == 'SESI') {
-            $mail = 'Jennyta.bara@ufr-info-p6.jussieu.fr';
-        }
-        elseif ($spe == 'SFPN') {
-            $mail = 'katia.pytel@ufr-info-p6.jussieu.fr';
-        }
-        else {
-            $mail = 'emilie.auger@ufr-info-p6.jussieu.fr';
-        }
-        $to  = $mail  . ', ' . $donnees['mail'] . ', m1voeuxs1@gmail.com';
-    
-        // Sujet
-        $subject = 'Voeux M1-S1 de ' . $num ;
-    
-    
-        // Pour envoyer un mail HTML, l'en-tête Content-type doit être défini
-        $headers  = 'MIME-Version: 1.0' . "\r\n";
-        $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-    
-        // En-têtes additionnels
-        $headers .= 'From: ' . $donnees['mail'] . "\r\n";
-    
-        // Envoi
-        mail($to, $subject, $message, $headers);
+        <title>UPMC, Master Informatique : Saisie des voeux d'UE du S1</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
+        <link rel="stylesheet" href="css/validation.css" type="text/css" />
+        <link rel="stylesheet" href="css/ue.css" type="text/css" />
+        <link rel="stylesheet" href="css/maincss.css" type="text/css" />
+        <!-- Decommenter sur le seveur si connexion disponible
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        Contenu duplique en local dans js/jquery-latest.js  -->
+        <script src="js/jquery-latest.js"></script> <!-- copie locale de jquery(realisee en 2014) -->
+        <script type="text/javascript" src="js/utils.js"></script>
+        <script type="text/javascript" src="js/edt_print.js"></script>
+         <script type="text/javascript">
+            SEMNUM =<?php echo json_encode($_SESSION['SEMESTRE']); ?>
+            //alert("SEMNUM : "+JSON.stringify(SEMNUM));
+        </script>
+        <script type="text/javascript" src="js/calendrier.js"></script>
+        <script type="text/javascript">
+            function sayonara() { //deplacer vers la derniere page
+                window.location.href = "edt_ideal.php"; //"http://www-master.ufr-info-p6.jussieu.fr/lmd/";
+                //<span class='Final' id='AuRevoirSpan'><button class="boutton" id="ByeBye" onclick="javascript:sayonara()">Sayonara</button></span>
+            }
+            function recap() {
+                var ue = <?php echo json_encode($choix); ?>;
+                //alert(JSON.stringify(ue));
+                var listeUE = getCalendrier(), asso = {};
+
+                for (var r = 0; r < ue.length; r++) {
+                    asso[listeUE[ ue[r][0] ][0]] = ue[r][0].toUpperCase();
+                    asso[listeUE[ ue[r][0] ][ue[r][1]] [0]] = ue[r][0].toUpperCase() + "-" + ue[r][1];
+                    asso[listeUE[ ue[r][0] ][ue[r][1]] [1]] = ue[r][0].toUpperCase() + "-" + ue[r][1];
+                }
+                //alert(JSON.stringify(asso));
+                print_edt(asso, "", ""); //Precondition : Une balise d'id "edtbox__" doit exister dans le document html
+                //Precondition : Une balise d'id "recapbox" doit exister dans le document html                
+                printRecap(<?php echo json_encode($ues); ?>,<?php echo json_encode($gpe); ?>);
+                
+            }
+        </script>
         
-        $_SESSION['message'] = $message;
-    ?>
-
-    <script>
-        alert("La saisie des voeux est finie, vous devez télécharger la version imprimable et choisir un EDT idéal pour finaliser votre pré-inscription.");
-    </script>
-
-    <br>
-    <input type="button" onclick="location.href='genererPDF.php';" value="Version Imprimable" />
-    <input type="button" onclick="location.href='edt_ideal.php';" value="EDT IDEAL" />
-    
-    
-    <script>
         
-        function genererPDF() {
-            document.location.replace("genererPDF.php");
-        }
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>          
+    </head>
+
+    <body style="background-color:lightgrey;" onload="recap()">
+        <?php include("navbar_1.php"); ?>
+
+            <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">         
+          <h2><b>R&eacute;capitulatif de votre pr&eacute;-inscription</b></h2>
+
+        <div id="infosEtu">
+            <span id="infoetu"><b>Dossier n&deg; : <?php echo $num; ?></b></span><br/>
+            <span id="infoetu"><b>&Eacute;tudiant : <?php echo $prenom . " " . strtoupper($nom); ?></b></span><br/>     
+        </div>
+
+        <div id="contextInfos">
+            <span id="contextinfo"><b><?php echo "Le " . date("d.m.y") . " à " . date("H:i:s"); ?></b></span><br/>
+            <span id="contextinfo"><b>Master Sp&eacute;cialit&eacute; <?php echo $spe; ?></b></span><br/>
+            <span id="contextinfo"><b>Rang : <?php echo $rang; ?></b></span><br/>
+        </div>
+        <br/>
+        <div id="finalMsgDiv">
+            <span class='note' id='finalMsg'><h4><b><font color="red">IMPORTANT : </font>Vous devez t&eacute;l&eacute;charger la Version Imprimable et l'apporter le jour des insctiptions p&eacute;dagogiques.</b>
+                    <br/><b>Vous devez ensuite choisir votre Emploi du Temps id&eacute;al en cliquant sur "EDT Ideal" pour finaliser votre pr&eacute;-inscription.</b></h4></span>
+        </div>
+
+        <div id="recapbox"></div><br/>
+        <div  id="edtbox__"></div>
         
-        function ideal() {
-            
-            
-            UE = <?php echo json_encode($choix); ?>;
-            
-          //Sinon on ouvre la page edt.php avec le nb d'UEs et les UEs choisis
-                   str = "nb=" + 5 + "&";
-                    for (i=1; i<6; i++) {
-                        str = str + "ue" + i + "=" + UE[i-1];
-                        if (i < 5) {
-                            str = str + "&";
-                        }
-                    }
-            //On fait appel à la page edt.php avec les paramètres dans la chaine str
-            location.href = "edt_ideal.php?"+str;
-            str = "edt_ideal.php?" + str;
-            var obj = document.getElementById('ideal');
-            obj.action = str;   
-            return str;
-        }
-    
-    </script>
-
-
+        
+        <br/><br/>
+        <button class="btn btn-sm btn-primary" onclick="sayonara()">EDT Ideal</button> 
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input class="btn btn-sm btn-primary" type="button" onclick="location.href='genererPDF.php';" value="Version Imprimable" />
+        
+      </div>
+    </div>           
     </body>
-
-
 </html>
+
+<?php
+
+// Script servant à envoyer le mail à l'étudiant en mettant comme émetteur le secrétariat de sa spécialité
+// Ensuite il envoi le même mail une 2ème fois mais cette fois de l'étudiant à l'admin et au secrétariat
+require_once('genererMailPDF.php');
+
+?>

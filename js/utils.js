@@ -26,3 +26,50 @@ function printBeforeHTML(dom, htm) {
 function redirect(location) { 
     window.location.href = location;
 }
+
+//attache le nom de l'ue a son groupe [Dlp,1]-> Dlp-1
+function bind(tab){
+    return tab.join("-");
+}
+
+//attache le nom de l'ue a son groupe [Dlp,1]-> Dlp1
+function bond(tab){
+    return tab.join("");
+}
+
+
+//attache les noms des ues a leurs groupes respectifs [[Dlp,1],[IL,2]]->(Dlp-1,IL-2)
+function bindAll(list){ 
+    //alert("oldlist="+JSON.stringify(list));
+    var newlist=[];
+    for(var i=0;i<list.length;i++)
+        newlist.push(bind(list[i]));
+    //alert("newlist="+JSON.stringify(newlist));
+    return newlist;
+}
+
+//attache les noms des ues a leurs groupes respectifs [[Dlp,1],[IL,2]]->(Dlp1,IL2)
+function bondAll(list){ 
+    //alert("oldlist="+JSON.stringify(list));
+    var newlist=[];
+    for(var i=0;i<list.length;i++)
+        newlist.push(bond(list[i]));
+    //alert("newlist="+JSON.stringify(newlist));
+    return newlist;
+}
+
+
+//detache le nom de l'ue de son groupe Dlp-1->[Dlp,1]
+function unbind(str){  
+    return str.split("-");
+}
+
+//detache les noms des ues de leurs groupes respectifs (Dlp-1,IL-2)->[[Dlp,1],[IL,2]]
+function unbindAll(list){  
+    //alert("oldlist="+JSON.stringify(list));
+    var newlist=[];
+    for(var i=0;i<list.length;i++)
+        newlist.push(unbind(list[i]));
+    //alert("newlist="+JSON.stringify(newlist));
+    return newlist;
+}

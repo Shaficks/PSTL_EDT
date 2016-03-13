@@ -1,0 +1,18 @@
+DONE
+**rajout de sup5x ds calendrier pour le cas d'un redoublant ayant valide 4ue il faut un sup5X pour une archi 6ue**
+
+**L AFFAITRE $SESSION vider la session a chaque fin de session  (quit or end sinon confusion pas si sur )
+    * AUCUN TRAITEMENT RISQUES PLUS FAIBLES SANS TRAITEMENT
+    *SI un user reprend la ou il s'etait arrete et avec un comportement honnete le contexte est repris et les modifs sur ce contexte
+    sont en synchro avec les donnees precedentes **
+
+**conflits de session on ouvre 2 session en mm tps (sur 2 pages differentes et les infos contexte des 2 pages se melangent)
+    *CHIKATANAI DESHO(AUCUN TRAITEMENT)**
+
+**les ";" apes ?>**
+NOTE : 
+    NOT DONE : MURI SHINAI 
+        **//Avertissement (supNx): si un nom d'ue commence par sup elle sera eliminee : changer sup by xyz , or other le cas echeant **
+        **choix_ue.js/redirect to confirmation.php :
+           * //point de vulnerabilite ; l'url est en clair : on peut la modifier et ainsi modifier les choix d'ues 
+            (possible perte de cohérence avec les regles & contraintes de choix d'ues)**

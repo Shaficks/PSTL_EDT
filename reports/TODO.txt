@@ -1,0 +1,13 @@
+TODO:
+'mmcn': ['gi10', ['ve08', 've10']], //gi expres??
+**Ne reset pas les rangs apres delete * -> attetion ; on fait koi un script de reset(cmt faire?) ou il le fera manuellement?*/
+
+NEW :
+*pb d'envoi de pj trop lent 
+*ne clean pas les tmp edt.pdf
+*ni admin ni secretariat ne recoivent de mail (c'est peut etre lié a la lenteur)
+*ajuster css coté choix_ue.php si eleve est redoublant et n'a q 1 ou 2 ue a choisir (en gros qd ya au plus deux ue ds les recom ca se casse la gle)
+    (Autres UEs part en sucette (cps cpa bi bdr validé pour un redoublant) by ex)
+*Table 'mastervoeuxs1.edt_ideal' doesn't exist (definir soit un fichier sql apart soit ajouter a mastervoeux s1)
+ 
+

@@ -9,34 +9,30 @@ session_start(); //recuperation de la session php en cours
 //It's highly recommended to have sendmail available from your PATH.
 //Also, the user that compiled PHP must have permission to access the sendmail binary
 
-
-function generate_id(){
-    //generation id avec une fonction de hash( sans insertion dans la base )
-    //Je propose un id base sur une fonction de hash(infos etudiants) a la base pour eviter les collisions/acces base inutile pour verifier l unicite de l id
-    //mais au final id sera gere en local mais pour fournir un id auto et contextuel hash est bien
+function generate_id() {
+    //generation id avec une fonction de hash( sans insertion dans la base ) basee sur le timestanp    
     $algos = hash_algos(); //recuperation du tableau d'algos de hachage
-
-    //au choix mais vu kil ya pa de collision timestamp seul suffit    
-    //$data=$_SESSION['num']." ".$_SESSION['nom']." ".$_SESSION['prenom']." ".time();
-
-    //Ajout de l id a la session : evite un acces base inutile
-    $_SESSION['ident'] =  hash($algos[2], time()); //hash md5;
+    //Ajout de l'id a la session : evite un acces base inutile
+    $_SESSION['ident'] = hash($algos[2], time()); //hash md5;
 }
 
 function send_mail_etu() {
     //generation de l' id
     generate_id();
-    
+
+    require_once('MSN.php');
     //Parametres du mail
     $subject = "[Master Upmc voeux inscription M1] Verification d'email";
-    $message = "Votre identifiant est : " . $_SESSION['ident'];
-    
+    $message = "Bonjour ". $_SESSION['prenom'].".<br/> Votre identifiant de session est : " . $_SESSION['ident'];
+    //Pour envoyer un mail HTML, l'en-tête Content-type doit être défini
+    $headers = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+    //En-têtes additionnels
+    $headers .= 'From: ' . $msn[$_SESSION['spe']] . "\r\n";
     //envoi du mail
-    if (mail($_SESSION['mail'], $subject, $message)) {
-        echo $subject . " Msg:" . $message;
+    if (mail($_SESSION['mail'], $subject, $message, $headers))
         header("Location: saisie_identifiant.php");
-    } else {
-        //trouver un traitement specifique en fonction des besoins du prof 
+    else {
         echo "Une erreur s'est produite!";
         exit(); //sortie 
     }

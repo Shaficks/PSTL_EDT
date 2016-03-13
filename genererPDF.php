@@ -12,7 +12,7 @@
                 // Décalage à droite
                 $this->Cell(80);
                 // Titre
-                $this->Cell(70,10,'Voeux M1-S1 de '.$_SESSION['num'],1,0,'C');
+                $this->Cell(70,10,'Voeux M1-S'.$_SESSION['SEMESTRE'].' de '.$_SESSION['num'],1,0,'C');
                 // Saut de ligne
                 $this->Ln(20);
             }
@@ -93,7 +93,10 @@
                     
                     //Mardi
                     if(isset($data['ma'.$tmp[$i]])) 
-                            $this->Cell($w[2],10,$data['ma'.$tmp[$i]],'LR',0,'C',$fill);
+                            if(strcmp($data['ma'.$tmp[$i]], "CONFERENCES") == 0)
+                                $this->Cell($w[2],10,"CONF.",'LR',0,'C',$fill);
+                            else 
+                                $this->Cell($w[2],10,$data['ma'.$tmp[$i]],'LR',0,'C',$fill);
                     else $this->Cell($w[2],10,'','LR',0,'C',$fill);
                     
                     //Mercredi
@@ -125,13 +128,14 @@
     $pdf = new PDF();
     $pdf->AliasNbPages(); //Numéroter les pages
     $pdf->AddPage(); //Ajouter une nouvelle page
-    $pdf->SetFont('Times','',15); //Initialiser la police et sa taille
+    $pdf->SetFont('Times','B',25); //Initialiser la police et sa taille
     //écrire dans la page
+    $pdf->Cell(0,10,utf8_decode('                                                          Rang : ').$_SESSION['rang'],0,1);
+    $pdf->Cell(0,10,utf8_decode('Spécialité : '.$_SESSION['spe']),0,1);
+    $pdf->SetFont('Times','',15);
     $pdf->Cell(0,10,utf8_decode('Ce fichier doit être imprimé et présenté le jour des inscriptions.'),0,1);
     $pdf->Cell(0,10,utf8_decode('Dossier n° : ').$_SESSION['num'],0,1);
     $pdf->Cell(0,10,utf8_decode('Étudiant : '.$_SESSION['prenom'].' '.strtoupper($_SESSION['nom'])),0,1);
-    $pdf->Cell(0,10,utf8_decode('Spécialité : '.$_SESSION['spe']),0,1);
-    $pdf->Cell(0,10,utf8_decode('Rang : ').$_SESSION['rang'],0,1);
     setlocale(LC_TIME, 'fra_fra');
     $pdf->Cell(0,10,utf8_decode('Créé le '.strftime('%A %d %B %Y à %H:%M:%S')),0,1);
     $pdf->Ln(); $pdf->Ln();
@@ -140,7 +144,7 @@
     $header = array('Liste des UEs', 'Groupe de TD/TME');
     // En-tête
     $w = array(50, 50); //Sert à donner les tailles des colonnes
-    $pdf->FancyTableListeUEs($header,$_SESSION['liste_ues'],$w);
+    $pdf->FancyTableListeUEs($header,$_SESSION['choix'],$w);
     
     // Titres des colonnes
     $header = array('', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
@@ -156,7 +160,7 @@
     $planning = $_SESSION['planning'];
     $w = array(40,30,30,30,30,30); //Sert à donner les tailles des colonnes
     $pdf->FancyTableEDT($header,$planning,$w);       
-    
-    $pdf->Output('m1_s1_voeux_'.$_SESSION['num'].'.pdf','D',true); //Envoyer le fichier PDF au navigateur
+        
+    $pdf->Output('m1_s'.$_SESSION['SEMESTRE'].'_voeux_'.$_SESSION['num'].'.pdf','D',true); //Envoyer le fichier PDF au navigateur
 
 ?>

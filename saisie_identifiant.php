@@ -9,8 +9,12 @@ session_start();   //recuperation de la session
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <meta charset="UTF-8"/>
-            <title>UPMC, Master Informatique : Saisie des voeux d'UE du S1</title>
+        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
+            <title>UPMC, Master Informatique : Saisie des voeux d'UE</title>
             <link rel="stylesheet" href="css/maincss.css" type="text/css" />
+            <link rel="stylesheet" href="css/saisie_identifiant.css" type="text/css" />
             <!-- Decommenter sur le seveur si connexion disponible
             <script src="http://code.jquery.com/jquery-latest.js"></script>
             Contenu duplique en local dans js/jquery-latest.js  -->
@@ -21,14 +25,14 @@ session_start();   //recuperation de la session
                     var id_client = formulaire.idetu.value.trim();
                     var id_server = <?php echo(json_encode($_SESSION['ident'])); ?>;
                     var redouble =<?php echo(json_encode($_SESSION['redouble'])); ?>;
-                    alert("id2=" + id_server); //me sert pour l'instant je ne recoit pas de mail 
+                    //alert("id2=" + id_server); //Debug
                     if (id_client == id_server) {
                         if (redouble == 'true')
                             window.location.href = "saisie_ues_valides.php";
                         else
                             window.location.href = "choix_ues.php";
                     } else {
-                        printHTML("#con_error_id", "L'identifiant saisi ne correspond pas!");
+                        printHTML("#con_error_id", "<font color = \"red\">L'identifiant saisi ne correspond pas!</font>");
                     }
                 }
             </script>
@@ -47,37 +51,53 @@ session_start();   //recuperation de la session
                             "&mail="+mail+"&prenom="+prenom+"&magister="+magister+"&redouble="+redouble;
                 }
             </script>
+            
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> 
     </head>
 
     <!-- note perso : ptetr rajouter des id et class aux fieldset pour affich en dispo block les msg_err -->
-    <body>
-        <h1>UPMC : Master Informatique</h1>
-        <h3>Site de saisie des voeux d'emploi du temps</h3>
+    <body style="background-color:lightgrey;">
+        <?php include("navbar_2.php"); ?>
+       <br/><br/>
 
+       
+    <div class="jumbotron">
+      <div class="container">       
         <div id="div_formVid">
             <!--formVid : formulaire Verification identifiant-->
             <form id="formVid" name="formVid" method="get" onsubmit="javascript:verifyId(this)" action="javascript:(function(){return;})()">
-                <h4>Verification de l'email &eacute;tudiant</h4>
-
+                <h1>V&eacute;rification de l'email &eacute;tudiant</h1>
+                <br/>
                 <fieldset>
-                    <legend>Identifiant de verification :</legend>
+                    <legend><b>Identifiant de v&eacute;rification</b></legend>
                     <input class="field" id="idetu" type="text" name="idetu"/>
                     <span id="span_verify_mail_button">
-                        <input class="boutton" id="bmail" type="submit" name="submit" value="Verifier"/>
+                        <input class="btn btn-sm btn-primary" id="bmail" type="submit" name="submit" value="Verifier"/>
                     </span>
                     <div class="con_error" id="con_error_id"></div>
-                    <span class="note" id="noteVid">Veuillez saisir l'identifiant qui vous a ete envoye a l'adresse <?php echo(json_encode($_SESSION['mail'])); ?>.</span>
+                    <span class="note" id="noteVid">Veuillez saisir l'identifiant qui vous a &eacute;t&eacute; envoy&eacute; &agrave; l'adresse <?php echo(json_encode($_SESSION['mail'])); ?>.</span>
                 </fieldset>
             </form>
         </div>
-
+          <br/><br/>
         <div id="div_resend_mail_button">
-            <span class="note" id="noteRemail">Vous n'avez pas recu de mail ? </span> 
-            <button class="boutton" id="bremail" onclick="javascript:redirect('send_id.php')">Renvoyer un email</button>    
+            <span class="note" id="noteRemail">Vous n'avez pas re&ccedil;u de mail ? V&eacute;rifiez vos spams ou &nbsp;</span> 
+            <button class="btn btn-sm btn-danger" id="bremail" onclick="javascript:redirect('send_id.php')">Renvoyer un email</button>    
         </div>
-
+          <br/>
         <div class="rollback" id="back_index">
-            <button class="boutton" id="bbackindex" onclick="javascript:rollback()">Retour</button>    
+            <button class="btn btn-sm btn-primary" id="bbackindex" onclick="javascript:rollback()">Retour</button>    
         </div>
+          
+          
+      </div>
+    </div>  
     </body>
 </html>

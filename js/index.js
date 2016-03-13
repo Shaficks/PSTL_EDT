@@ -24,7 +24,8 @@ function connect(formulaire) {
      spe=" + spe + " redouble=" + redouble + " magister=" + magister + "}");*/
 
     var conform = verif_num(num) && verif_vnum(num, vnum)
-            && verif_text("nom", nom) && verif_text("prenom", prenom) && verif_mail(mail);
+            && verif_text("nom", nom) && verif_text("prenom", prenom) && verif_mail(mail)
+            && verif_magistere(redouble, magister);
 
     if (conform) { //les entrees du formulaire sont toutes conformes
         //redirection vers start_session avec les parametres utiles du formulaire 
@@ -44,7 +45,7 @@ function verif_num(num) {
         printHTML("#con_error_num", ""); //remise a blanc du precedent message d'erreur eventuel
         return true;
     }
-    func_erreur_connexion("#con_error_num", "Numero d'etudiant invalide");
+    func_erreur_connexion("#con_error_num", "<font color = \"red\">Num&eacute;ro d'&eacute;tudiant invalide.</font>");
     //alert("num rouge");
     return false;
 }
@@ -55,7 +56,7 @@ function verif_vnum(num, num2) {
         printHTML("#con_error_num2", ""); //remise a blanc du precedent message d'erreur eventuel
         return true;
     }
-    func_erreur_connexion("#con_error_num2", "La verification n'est pas identique au numero d'etudiant ");
+    func_erreur_connexion("#con_error_num2", "<font color='red'>La v&eacute;rification n'est pas identique au num&eacute;ro d'&eacute;tudiant.</font>");
     //alert("vnum rouge");
     return false;
 }
@@ -66,7 +67,18 @@ function verif_text(desc, texte) {
         printHTML("#con_error_" + desc, ""); //remise a blanc du precedent message d'erreur eventuel
         return true;
     }
-    func_erreur_connexion("#con_error_" + desc, "Votre " + desc + " doit etre renseigne");
+    func_erreur_connexion("#con_error_" + desc, "<font color = 'red'>Votre " + desc + " doit &ecirc;tre renseign&eacute;.</font>");
+    // alert(desc + " is empty");
+    return false;
+}
+
+//Vérification redoublant et magistère (un étudiant ne peut être redoublant et candidat au parcours d'excellence)
+function verif_magistere(redouble, magistere) {
+    if (!(redouble && magistere)) {
+        printHTML("#con_error_magistere",""); //remise a blanc du precedent message d'erreur eventuel
+        return true;
+    }
+    func_erreur_connexion("#con_error_magistere", "<font color='red'>Vous ne pouvez pas &ecirc;tre redoublant et candidat au parcours d'exellence.</font>");
     // alert(desc + " is empty");
     return false;
 }
@@ -84,7 +96,7 @@ function verif_mail(mail) {
         printHTML("#con_error_email", ""); //remise a blanc du precedent message d'erreur eventuel.
         return true;
     }
-    func_erreur_connexion("#con_error_email", "Votre email doit etre renseigne! Un mail de verification vous sera envoye.");
+    func_erreur_connexion("#con_error_email", "<font color='red'>Votre email doit &ecirc;tre renseign&eacute; ! Un mail de v&eacute;rification vous sera envoy&eacute;.</font>");
     //alert("mail="+mail);
     return false;
 }

@@ -1,7 +1,9 @@
 <?php
 session_start(); //recuperation de la session
 
-$liste_ues = array("aagb", "mapsi", "algav", "mlbda", "archi1", "mobj", "ares", "model", "bima", "mogpl", "complex", "noyau", "dlp", "pr", "elecana1", "rtel", "il", "signal", "lrc", "vlsi1");
+$liste_ues =$_SESSION['ALLUES']; //recuperation de la liste complete des ues du semestre
+//print_r($liste_ues);
+//echo "Semestre: ".$_SESSION['SEMESTRE'];
 ?>
 
 <!--Page de saisie des ues deja validees par un redoublant : saisie_ues_valides.php-->
@@ -9,9 +11,13 @@ $liste_ues = array("aagb", "mapsi", "algav", "mlbda", "archi1", "mobj", "ares", 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
-        <meta charset="UTF-8">
-            <title>UPMC, Master Informatique : Saisie des voeux d'UE du S1</title>
+        <meta charset="UTF-8"> 
+            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik">  
+            <title>UPMC, Master Informatique : Saisie des voeux d'UE</title>
             <link rel="stylesheet" href="css/maincss.css" type="text/css" />
+            <link rel="stylesheet" href="css/saisie_ues_valides.css" type="text/css" />
             <!-- Decommenter sur le seveur si connexion disponible
             <script src="http://code.jquery.com/jquery-latest.js"></script>
             Contenu duplique en local dans js/jquery-latest.js  -->
@@ -28,17 +34,30 @@ $liste_ues = array("aagb", "mapsi", "algav", "mlbda", "archi1", "mobj", "ares", 
                     var prenom = <?php echo(json_encode($_SESSION['prenom'])); ?>;
                     var magister = <?php echo(json_encode($_SESSION['magister'])); ?>;
                     var redouble = <?php echo(json_encode($_SESSION['redouble'])); ?>;
-
+                    
                     window.location.href = "index.php?num=" + num + "&nom=" + nom + "&spe=" + spe +
                             "&mail=" + mail + "&prenom=" + prenom + "&magister=" + magister + "&redouble=" + redouble;
                 }
             </script>
+            
+            
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>               
     </head>
 
-    <body>
-        <h1>UPMC : Master Informatique</h1>
-        <h3>Site de saisie des voeux d'emploi du temps</h3>
-
+    <body style="background-color:lightgrey;">
+        <?php include("navbar_1.php"); ?>
+    <div class="jumbotron">
+      <div class="container">  
+        <h2><b>Saisie des UEs Validées</b></h2>          
+        <br/>
+        <button class="btn btn-sm btn-primary" id="bbackindex" onclick="javascript:rollback()">Retour</button>
         <span id="span_tab_ues_valides"><!-- une span pour plus de flexibilite dans l'affichage avec css-->
 
             <form id="formUev" name="formUeValides" method="POST" onsubmit="javascript:transmitValides(this)" action="javascript:(function(){return;})()">
@@ -46,32 +65,40 @@ $liste_ues = array("aagb", "mapsi", "algav", "mlbda", "archi1", "mobj", "ares", 
                 Gestion par aiguillage centralisee avec javascript : js/file.js qui decidera en fonction des parametres transmis 
                 ou aller ensuite / ou bien rester sur la meme page active( parametres incorrects par exemple )
                 sans recharger la page (conservation de l etat du formulaire)  -->
-                <h4>Informations sur l'&eacute;tudiant (Unites d'enseignement validees)</h4>
+                <h3><b>Informations sur l'&eacute;tudiant (Unit&eacute;s d'enseignement valid&eacute;es)</b></h3>
+                
                 <fieldset>
-                    <legend>Selectionnez les ues que vous avez deja validees : </legend>
+                    <legend>Selectionnez les UEs que vous avez d&eacute;j&agrave; valid&eacute;es : </legend>
                     <?php
                     sort($liste_ues); //ordre alphabetique sur la liste d'ues
                     foreach ($liste_ues as $value) {
+                        echo "<div style=\"display:inline-block;float:left;\">";
                         echo '<span class="box_ue" id="span_' . $value . '">' .
-                        '<input class="check_ue" onclick="add_ue_valide(this)" type="checkbox" name="' . $value . '" id="ue_' . $value . '"/>' .
-                        '<label id="label_' . $value . '" for="' . $value . '">' . strtoupper($value) . '</label>' .
-                        '</span>' . "\n" .
-                        '<br/>';
+                           '<input class="check_ue" onclick="add_ue_valide(this)" type="checkbox" name="' . $value . '" id="ue_' . $value . '"/>' .
+                            '<label id="label_' . $value . '" for="' . $value . '">' . strtoupper($value) . '</label>' .
+                            '</span>' . "\n" .
+                            '<br/>';
+                      
+                        echo "</div>";
                     }
                     ?>
                 </fieldset>
                 <div id="hidens"></div>
-
-                <div id="div_buttons">
-                    <input class="boutton" id="buev" type="submit" name="submit" value="Valider"/> 
-                    <span class="note" id="noteUev">Si vous n'avez valid&eacute; aucune ue, cliquez directement sur <b>Valider</b> Mdrr.</span>
-                </div>
+                
+                <br/> <br/>
+                        
+                    
+                    <input class="btn btn-sm btn-primary" id="buev" type="submit" name="submit" value="Valider"/> 
+                    <span class="note" id="noteUev">   Si vous n'avez valid&eacute; aucune UE, cliquez directement sur <b>Valider</b>.</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    
             </form>
-
-            <div class="rollback" id="back_index">
-                <button class="boutton" id="bbackindex" onclick="javascript:rollback()">Retour</button>    
-            </div>
+            <br/>
+            
+            
         </span>
+      </div>
+    </div>        
     </body>
 </html>
 

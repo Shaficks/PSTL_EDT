@@ -1,76 +1,108 @@
 <?php
-    session_start();
-    
-    //Récupération de l'EDT choisi
-    $edt = $_GET['edt'];
+session_start();
 
-    //Fonction explode sert à retourner un tableau des résultats JSON récupérés dans $edt
-    $tabEdt = explode(",", $edt);
-    
-    //Tableau qui va contenir les choix des UEs et groupes
-    $choix = [[],[],[],[],[]];
-    
-    //Sert à stocker les paires (UE, groupe)
-    for ($i=0; $i<5; $i++) {
-        $choix[$i] = [$tabEdt[2*$i], $tabEdt[2*$i+1]];
+$num = $_SESSION['num'];
+require_once('config.php'); // Acces Base de donnees
+//On verifie que les voeux ideaux n'aient pas deja ete faits
+$sql = "SELECT * FROM edt_ideal WHERE numetu=" . $_SESSION['num'] . " AND voeux=1";
+$requete = mysql_query($sql) or die(mysql_error());
+
+if (!(mysql_num_rows($requete) > 0)) {
+
+    $mailetu = $_SESSION['mail'];
+    $spe = $_SESSION['spe'];
+    $nom = $_SESSION['nom'];
+    $prenom = $_SESSION['prenom'];
+
+    $edt = $_GET['ideal'];
+
+    $tabEdt = explode(",", $edt); //(nomUe,groupe)
+
+    $choix = []; //choix de type complet (ex:[["Conferences","1"],["ca","1"],["sup1x","1"],["cpa","2"],["cps","2"],["pc2r","3"]])
+    $uec = []; ////choix de type leger ([["Conferences","ca,"sup1x,"cpa,"cps","pc2r]) 
+
+    for ($i = 0; $i < sizeof($tabEdt) / 2; $i++) {//sizeof (tabedt) est toujours un  multiple de 2
+        $choix[$i] = [$tabEdt[2 * $i], $tabEdt[2 * $i + 1]];
+        $uec[$i] = $tabEdt[2 * $i];
     }
-    
 
-    //Préparation des variables de Session qui vont être stockées dans la base de données
-    //UEs et groupes
-    for ($i=1; $i<6; $i++) {
-        $ue = 'ue'.$i;
-        $gp = 'ue'.$i.'gpe';
-        $_SESSION[$ue] = $choix[$i-1][0];
-        $_SESSION[$gp] = $choix[$i-1][1];
+
+    $_SESSION['choix'] = $choix; //Choix au complet avec les ue supnX
+    $_SESSION['uec'] = $uec; //Choix legers(sans les groupes) avec les ue supnX 
+//print_r($choix); //Debug
+    //On cherche a se debarasser des supnX
+    $_SESSION['EDT_IDEAL'] = [];
+    $i = 0;
+    $j = 1;
+    //echo " & sizeof choix:" . sizeof($choix);
+    while ($i < sizeof($choix)) {
+        if (substr($choix[$i][0], 0, 3) != 'sup') { //Dangereux : si un nom d'ue commence par sup elle sera eliminee : moveTo xyz  by egg
+            $_SESSION['EDT_IDEAL']['ue' . $j] = $choix[$i][0];
+            $_SESSION['EDT_IDEAL']['ue' . $j . 'gpe'] = $choix[$i][1];
+            $j++;
+        }
+        $i++;
     }
-    
-    
-    $tab = []; //Contiendra les paires (UE, groupe) qui seront stockées dans la base
-    $ue = ""; //Sert à accéder aux champs des ues et groupes dans les requêtes dans la base
-    for ($i=1; $i<6; $i++) {
-        $tab[$i-1] = $_SESSION['ue'.$i].'-'.$_SESSION['ue'.$i.'gpe'];
+
+     
+    //On ecrit la requete sql dans edt_ideal : on enregistre l'etudiant
+    $sql = "INSERT INTO edt_ideal(numetu, voeux) VALUES(" . $num .  ", 1)";
+    mysql_query($sql) or die(mysql_error());
+
+    $ue = "";
+    for ($i = 1; $i <= sizeof($_SESSION['EDT_IDEAL']) / 2; $i++) {
+        $ue .= "ue" . $i . "='" . $_SESSION['EDT_IDEAL']['ue' . $i] . "', ue" . $i . "gpe=" . $_SESSION['EDT_IDEAL']['ue' . $i . 'gpe'];
+        if ($i < sizeof($_SESSION['EDT_IDEAL']) / 2)
+            $ue .= ", ";
     }
-    
-   
-    
-    require('config.php'); // On réclame le fichier
-    
-    $nb = $_SESSION['num'];
+    //echo $ue; //Debug
+    //Ici on mets a jour les champs UEi et UEigpe de la table edt_ideal
+    $sql = "UPDATE edt_ideal SET " . $ue . " WHERE numetu=" . $num;
+    mysql_query($sql) or die(mysql_error());
 
-    // on écrit la requête sql dans Master, ce qui donne le rang d'enregistrement des voeux (au sein du master)
-    $sql = "INSERT INTO edt_ideal(numetu,ue1gpe,ue2gpe,ue3gpe,ue4gpe,ue5gpe) ".
-             "VALUES('$nb','$tab[0]','$tab[1]','$tab[2]','$tab[3]','$tab[4]')";
-    mysql_query($sql) or die( mysql_error() );   
-    
-
-    session_destroy();
+    //Fermeture connexion base de donnees
     mysql_close();
-    ?>
+
+}
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <title>UPMC, Master Informatique : Saisie des voeux d\'UE du S1</title>
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
+                <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
 
-      </head>
+                    <!-- Latest compiled and minified CSS -->
+                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
-    <body>
+                        <!-- Optional theme -->
+                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 
-
-    <h3>
-        UPMC : Master Informatique - Pré-inscription validée <br/>
-        Toute demande de modification se fera directement auprès des responsables le jour des inscriptions.
-    </h3>
-
-    <script> 
-       alert("Votre pré-inscription est finalisée, vous pouvez quitter le site web.");
-    </script>
-
-    </body>
+                            <!-- Latest compiled and minified JavaScript -->
+                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>         
+                            </head>
 
 
-</html>
+                            <body style="background-color:lightgrey;">
+                                <?php include("navbar_1.php"); ?>
+                                <!-- Main jumbotron for a primary marketing message or call to action -->
+                                <div class="jumbotron">
+                                    <div class="container">  
 
+                                        <h2>  <b>  Pré-inscription terminée, vous pouvez à présent quitter le site. </b></h2> <br/>
+                                        <h3>
+                                            Toute demande de modification se fera directement auprès des responsables de la spécialité le jour des inscriptions pédagogiques.
+                                        </h3>
+
+
+                                    </div>
+                                </div>  
+                            </body>
+
+
+                            </html>

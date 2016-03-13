@@ -5,7 +5,7 @@
  * */
 
 /**
- * retourne un tableau de noms d'ues valides selectionnees
+ * Met a jour le tableau des noms d'ues selectionnees (uec(uechoisies))
  * @returns {Array|uec}
  */
 function getUES() {
@@ -17,10 +17,10 @@ function getUES() {
 }
 
 //Duplication complete de add_ue(je ne l'ai pas reutilisee car il faudrait faire 2 appels a add_ue pour 2 ues oblig ce qui lance generateEDTs 
-//si l'ajout de la premiere ue met nb_ue_restant a 0 sans attendre l'ajjout de la deuxieme ue oblig ce qui afficherait un msg d'erreur : trop d'ues
+//si l'ajout de la premiere ue met nb_ue_restant a 0 sans attendre l'ajout de la deuxieme ue oblig ce qui afficherait un msg d'erreur : trop d'ues
 //Il faut que l'ajout des deux ues soit consecutif et atomique
 function add_oblig(nb_suivi) { //ajout automatique des ues obligatoires dans le DOM et dans le tableau global obligs
-    description("desc1"); //affichage des instructions sur le choix des ues
+    description("instructchoixue1"); //affichage des instructions sur le choix des ues
     var span_oblig_tab = document.getElementsByClassName("box_ue_oblig"); //tableau des ues commises d'office
     obligs = [];
     for (var i = 0; i < span_oblig_tab.length; i++) {
@@ -39,7 +39,7 @@ function add_oblig(nb_suivi) { //ajout automatique des ues obligatoires dans le 
             if (uec.indexOf(nomUE) == -1)
                 all_ue[i].setAttribute("disabled", "true");
         }
-        description("desc2");
+        description("instructchoixue2");
         generateEDTs(nb_suivi); //generation de l'edt ou non(depassement-> show error)  
     }
 }
@@ -62,8 +62,9 @@ function add_ue(ue, nb_suivi) { //le parametre ue est la checkbox correspondant 
                 if (uec.indexOf(nomUE) == -1)
                     all_ue[i].setAttribute("disabled", "true");
             }
-            description("desc2");
+            description("instructchoixue2");
             generateEDTs(nb_suivi); //generation de l'edt ou non(depassement-> show error)  
+            refreshEffectifs();//raffraichissement des effectifs
         }
     } else {
         //mise a jour des ues choisies
@@ -71,7 +72,7 @@ function add_ue(ue, nb_suivi) { //le parametre ue est la checkbox correspondant 
 
         //Degrisement de toutes les ues 
         if (uec.length >= nb_suivi) { //si nombre d'ues choisies >= nombre d'ues suivies annonce =>alors degriser toutes les ues
-            var all_ue = document.getElementsByClassName("check_ue"); //ues : tableau de toutes les ues
+            var all_ue = document.getElementsByClassName("check_ue"); //all_ue : tableau de toutes les ues
             for (var i = 0; i < all_ue.length; i++) {
                 var nomUE = all_ue[i].getAttribute("name");
                 if (obligs.indexOf(nomUE) == -1) {
@@ -79,10 +80,10 @@ function add_ue(ue, nb_suivi) { //le parametre ue est la checkbox correspondant 
                     //alert(nomUE+" : enabled");
                 }
             }
-            description("desc1");
+            description("instructchoixue1");
             eraseEDTs();
         }
-        //les ues deselectionnees sont retirees de la balise cachee choices(maj des ues chisies)
+        //les ues deselectionnees sont retirees de la balise cachee choices(maj des ues choisies)
         var choices = document.getElementById("choices");
         choices.removeChild(document.getElementById("choix_" + ue.getAttribute("name")));
     }
@@ -94,33 +95,35 @@ function generateEDTs(nb_suivi) { //le parametre form ne sera pas utilise
 
     if (nb_ue_restant == 0) {
         var choix = uec.slice(0); //Tableau des UEs choisies
-        //ne surtout pas modifier uec en concurence (gestion edt!= gestion ues)
+        //ne surtout pas modifier uec en concurence (gestion edt!= gestion ues) : plutot utiliser une copie de uec : choix;
 
-        //Ajout des UEs fictives (bourrage)
-        var MAX = 6; //format 6 ues 
-        for (var i = uec.length + 1; i <= MAX; i++)
-            choix.push('sup' + (i - uec.length) + 'x');
+        if (checkNbSpeUE(choix)) {
+            //Ajout des UEs fictives (bourrage)
+            var MAX = 6; //format 6 ues //MAX represente le nombre MAXIMAL GERE PAR LE LOGICIEL
+            for (var i = uec.length + 1; i <= MAX; i++)
+                choix.push('sup' + (i - uec.length) + 'x');
 
-        edt(choix); //calcul puis affichage dynamique de l'edt
-
+            edt(choix); //calcul puis affichage dynamique de l'edt
+        }
+        
     } else if (nb_ue_restant < 0) {
-        var msg = "Vous avez " + (-nb_ue_restant) + " UE en trop, veuillez verifier vos UEs  validees. <br/> \n\
-        Si vous avez eu un parcours multi-specialites, merci de contactez-le secretariat!";
+        var msg = "<p class=\"error\">Vous avez " + (-nb_ue_restant) + " UE en trop, veuillez verifier vos UEs  validees.   \n\
+        Si vous avez eu un parcours multi-specialites, merci de contactez-le secretariat!</p>";
         printHTML("#con_error_choix", msg);
-    } else {
-        var msg = "Il vous faut choisir encore " + nb_ue_restant + " UE avant de valider";
-        printHTML("#con_error_choix", msg);
-    }
+    } 
 }
 
 function eraseEDTs() {
     printHTML("#edts", "");
 }
 
-function chooseEDT(form) { //le parametre form ne sera pas utilise
-    var edt = $('input[name="edt"]:checked').val();
+function chooseEDT(form, option) { //le parametre form ne sera pas utilise
+    var edt = $('input[name="edt"]:checked').val(); //recuperation de l'edt choisi
 //    alert("edt=" + edt);
-    edt=edt.replace(/,/g, "%2C");
+    edt = edt.replace(/,/g, "%2C");
     //alert("edt=" + edt);
     window.location.href = "confirmation.php?edt=" + edt;
+    //point de vulnerabilite ; l'url est en clair : on peut la modifier et ainsi modifier
+    //les choix d'ues (perte de cohérence avec les regles de choix d'ues)
+    //Peut-etre passer a post apres resolution des problemes lies au double post+redicrection  
 }
