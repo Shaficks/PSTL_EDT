@@ -11,9 +11,9 @@ require_once ('semestre.php');
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <meta charset="UTF-8">
-            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
-            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
-            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik">
+            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc"/>
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA"/>
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"/>
             <title>UPMC, Master Informatique : Saisie des voeux d'UE</title>
             <link rel="stylesheet" href="css/maincss.css" type="text/css" />
             <link rel="stylesheet" href="css/index.css" type="text/css" />
@@ -25,10 +25,10 @@ require_once ('semestre.php');
             <script type="text/javascript" src="js/utils.js"></script>
             
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
 
         <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"/>
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> 
@@ -46,7 +46,7 @@ require_once ('semestre.php');
         <p>Ce site permet d'effectuer une pr&eacute-inscription p&eacutedagogique pour les &eacutetudiants de M1 Informatique de l'UPMC.</p>
         <br/><br/>
 
-        <div id="div_formI" class="form-inline" role="form">
+        <div id="div_formI" class="form-inline" role="form" style="width:100%;">
             <!--formI : formulaire Informations personnelles-->
             <form id="formI" name="formInfos" method="get" onsubmit="javascript:connect(this)" action="javascript:(function(){return;})()">
                 <!-- action="javascript:(function(){return;})()" permet : 
@@ -58,9 +58,8 @@ require_once ('semestre.php');
                 <fieldset> 
                 <legend><b>Informations sur l'&eacute;tudiant</b></legend>
         
-        <div>
 
-            <div style="display:inline-block;float:left;">        
+            <div style="display:inline-block;float:left;width:50%;">        
                     <div class="form-group">
                     <label>Num&eacute;ro de dossier :</label>
                     <?php
@@ -140,7 +139,7 @@ require_once ('semestre.php');
             </div>
              
             
-            <div style="display:inline-block;float:right;">        
+            <div style="display:inline-block;float:right;width: 50%;">        
                     <b>&Ecirc;tes-vous redoublant du master Informatique de l'UPMC ?</b><br/>
                     <?php
                     if (isset( $_GET['redouble'] ) and $_GET['redouble'] == 'true')
@@ -188,7 +187,7 @@ require_once ('semestre.php');
                     <span class="note" id="noteF"><font color="red"><b><i>Tous les champs sont obligatoires.</i></b></font></span>
                 </div>
             </div>        
-        </div>            
+                    
             </form>
         </div>
       </div>

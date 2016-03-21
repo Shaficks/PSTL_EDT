@@ -9,9 +9,9 @@ session_start(); //recuperation de la session
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <meta charset="UTF-8"> 
-            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
-            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
-            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
+            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc"/>
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA"/>
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"/> 
             <title>UPMC, Master Informatique : Saisie des voeux d'UE du S1</title>
             <link rel="stylesheet" href="css/choix_ues.css" type="text/css" />
             <link rel="stylesheet" href="css/ue.css" type="text/css" />

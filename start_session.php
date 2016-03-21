@@ -30,13 +30,13 @@ if ($_GET['num'] and $_GET['nom'] and $_GET['prenom'] and $_GET['mail']
     } else {
         require_once('config.php'); // config.php est requis //connexion implicite a la base de donnees
         //Recuperation de l'etudiant par son numero s'il a deja termine son inscription
-        $sql = "SELECT * FROM ListeEtudiants WHERE numero = " . $_SESSION['num'];
+        $sql = "SELECT * FROM listeetudiants WHERE numero = " . $_SESSION['num'];
 
         //On verifie que les voeux n'aient pas deja ete faits
         $requete = mysql_query($sql) or die(mysql_error());
         if (mysql_num_rows($requete) > 0) {
-            echo 'Vous avez déjà enregistré vox voeux.'
-            . ' Vous pourrez éventuellement les modifier en septembre lors de la pré-rentrée. <br>';
+            echo 'Vous avez d&eacute;&agrave; enregistr&eacute; vox voeux.'
+            . ' Vous pourrez &eacute;ventuellement les modifier en septembre lors de la pr&eacute;-rentr&eacute;e. <br>';
             exit();
         }
         header("Location: send_id.php");  //Delegation envoi du mail a send_id

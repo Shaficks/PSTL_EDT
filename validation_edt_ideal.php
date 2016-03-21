@@ -73,36 +73,33 @@ if (!(mysql_num_rows($requete) > 0)) {
         <title>UPMC, Master Informatique : Saisie des voeux d\'UE du S1</title>
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
-            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
-                <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
+        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc"/>
+        <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA"/>
+        <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"/> 
 
-                    <!-- Latest compiled and minified CSS -->
-                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
 
-                        <!-- Optional theme -->
-                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"/>
 
-                            <!-- Latest compiled and minified JavaScript -->
-                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>         
-                            </head>
-
-
-                            <body style="background-color:lightgrey;">
-                                <?php include("navbar_1.php"); ?>
-                                <!-- Main jumbotron for a primary marketing message or call to action -->
-                                <div class="jumbotron">
-                                    <div class="container">  
-
-                                        <h2>  <b>  Pré-inscription terminée, vous pouvez à présent quitter le site. </b></h2> <br/>
-                                        <h3>
-                                            Toute demande de modification se fera directement auprès des responsables de la spécialité le jour des inscriptions pédagogiques.
-                                        </h3>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>         
+    </head>
 
 
-                                    </div>
-                                </div>  
-                            </body>
+    <body style="background-color:lightgrey;">
+        <?php include("navbar_1.php"); ?>
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+            <div class="container">  
 
+                <h2>  <b>  Pr&eacute;-inscription termin&eacute;e, vous pouvez &agrave; pr&eacute;sent quitter le site. </b></h2> <br/>
+                <h3>
+                    Toute demande de modification se fera directement aupr&egrave;s des responsables de la sp&eacute;cialit&eacute; le jour des inscriptions p&eacute;dagogiques.
+                </h3>
 
-                            </html>
+            </div>
+        </div>  
+    </body>
+</html>

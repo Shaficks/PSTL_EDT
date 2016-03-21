@@ -25,7 +25,7 @@ $_SESSION['nb_suivi'] = $nb_suivi; //ajout du nombre d' ues suivies a l'environn
 
 /* * GESTION EDT* */
 require_once('config.php'); //On aura besoin de config.php afin de se connecter a la base
-$reponse = mysql_query("SELECT * FROM UEGroupes"); 
+$reponse = mysql_query("SELECT * FROM uegroupes"); 
 $groupes = []; //Tableau qui contiendra les paires (groupe_ue => effectif) Exemple ( groupe : algav1, effectif : 30 )
 while ($donnees = mysql_fetch_array($reponse))
     $groupes[$donnees['groupe']] = $donnees['effectif'];
@@ -39,9 +39,9 @@ while ($donnees = mysql_fetch_array($reponse))
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <meta charset="UTF-8"> 
-            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
-            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
-            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
+            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc"/>
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA"/>
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"/> 
             <title>UPMC, Master Informatique : Saisie des voeux d'UE du S1</title>
             <link rel="stylesheet" href="css/choix_ues.css" type="text/css" />
             <link rel="stylesheet" href="css/ue.css" type="text/css" />

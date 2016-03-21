@@ -12,10 +12,10 @@
           </div>
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a target="_blank" href="about.php">À propos</a></li>
+                <li><a target="_blank" href="about.php">&Agrave; propos</a></li>
                 <li><a target="_blank" href="contact.php">Contact</a></li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Spécialités<span class="caret"></span></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sp&eacute;cialit&eacute;s<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a target="_blank" href="http://www-master.ufr-info-p6.jussieu.fr/lmd/specialite/androide">ANDROIDE</a></li>
                   <li><a target="_blank" href="http://www-master.ufr-info-p6.jussieu.fr/lmd/specialite/bim">BIM</a></li>

@@ -22,7 +22,7 @@ if(isset($_GET['planning']))
 
 require_once('config.php'); // Acces Base de donnees
 //On verifie que les voeux n'aient pas deja ete faits
-$sql = "SELECT * FROM ListeEtudiants WHERE numero=" . $_SESSION['num'] . " AND voeux=1";
+$sql = "SELECT * FROM listeetudiants WHERE numero=" . $_SESSION['num'] . " AND voeux=1";
 $requete = mysql_query($sql) or die(mysql_error());
 if (mysql_num_rows($requete) > 0) {
     echo "<div id ='enddiv'>"
@@ -37,7 +37,7 @@ if (mysql_num_rows($requete) > 0) {
 }
 
 //On ecrit la requete sql dans ListEtudiants : on enregistre l'etudiant
-$sql = "INSERT INTO ListeEtudiants(numero, nom, prenom, mail, spe, voeux) VALUES(" . $num . ", '" . $nom . "', '" . $prenom . "', '" . $mailetu . "', '" . $spe . "', 0)";
+$sql = "INSERT INTO listeetudiants(numero, nom, prenom, mail, spe, voeux) VALUES(" . $num . ", '" . $nom . "', '" . $prenom . "', '" . $mailetu . "', '" . $spe . "', 0)";
 mysql_query($sql) or die(mysql_error());
 
 $ue = "";
@@ -48,41 +48,41 @@ for ($i = 1; $i <= sizeof($_SESSION['FINALEDT']) / 2; $i++) {
 }
 //echo $ue; //Debug
 //Ici on mets a jour les champs UEi, UEigpe et voeux de la base dans ListEtudiants
-$sql = "UPDATE ListeEtudiants SET voeux=1, " . $ue . " WHERE numero=$num";
+$sql = "UPDATE listeetudiants SET voeux=1, " . $ue . " WHERE numero=$num";
 mysql_query($sql) or die(mysql_error());
 
 //On ecrit la requete sql dans la SPE, ce qui donne le rang d'enregistrement des voeux
-$sql = "INSERT INTO $spe(numetu) VALUES($num)";
+$sql = "INSERT INTO ".strtolower($spe.'(numetu)')." VALUES($num)";
 mysql_query($sql) or die(mysql_error());
 
 //On recupere rang
-$sql = "SELECT * FROM $spe WHERE numetu=$num";
+$sql = "SELECT * FROM ". strtolower($spe) ." WHERE numetu=$num";
 $requete = mysql_query($sql) or die(mysql_error());
 $rang = mysql_fetch_array($requete)['rang'];
 
 $_SESSION['rang'] = $rang;
 
 //On ecrit la requete sql dans Master, ce qui donne le rang d'enregistrement des voeux (au sein du master)
-$sql = "INSERT INTO Master(numetu) VALUES($num)";
+$sql = "INSERT INTO master(numetu) VALUES($num)";
 mysql_query($sql) or die(mysql_error());
 
 //On ecrit la requete sql dans UEGroupes : incrementer le nb d'etudiant dans chaque groupe
 $effectif = [];
 for ($i = 1; $i <= sizeof($_SESSION['FINALEDT']) / 2; $i++) {
-    $sql = "SELECT * FROM UEGroupes WHERE groupe='" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+    $sql = "SELECT * FROM uegroupes WHERE groupe='" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
     $requete = mysql_query($sql) or die(mysql_error());
     if (mysql_num_rows($requete) > 0) {
-        $sql = "UPDATE UEGroupes SET effectif = effectif+1 WHERE groupe = '" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+        $sql = "UPDATE uegroupes SET effectif = effectif+1 WHERE groupe = '" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
         mysql_query($sql) or die(mysql_error());
     }elseif($_SESSION['FINALEDT']['ue' . $i]!='Conferences'){//Ne pas tenir compte des conferences pour le calcul des effectifs
-        $sql = "INSERT INTO UEGroupes(groupe,effectif) VALUES('" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "',0)";
+        $sql = "INSERT INTO uegroupes(groupe,effectif) VALUES('" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "',0)";
         //echo "sql:$sql";//Debug : all right but 'Conference 0' in db
         mysql_query($sql) or die(mysql_error());
         //Update apres creation des groupes auparavant inexistant dans la base
-        $sql = "UPDATE UEGroupes SET effectif = effectif+1 WHERE groupe = '" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+        $sql = "UPDATE uegroupes SET effectif = effectif+1 WHERE groupe = '" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
         mysql_query($sql) or die(mysql_error());
     }
-    $sql = "SELECT * FROM UEGroupes WHERE groupe='" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
+    $sql = "SELECT * FROM uegroupes WHERE groupe='" . $_SESSION['FINALEDT']['ue' . $i] . $_SESSION['FINALEDT']['ue' . $i . 'gpe'] . "'";
     $requete = mysql_query($sql) or die(mysql_error());
     $donnees = mysql_fetch_array($requete);
     $effectif[$i - 1] = $donnees['effectif'];
@@ -108,9 +108,9 @@ for ($i = 1; $i <= sizeof($_SESSION['FINALEDT']) / 2; $i++) {
     <head>
         <title>UPMC, Master Informatique : Saisie des voeux d'UE du S1</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
-        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
-            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
-            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
+        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc"/>
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA"/>
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"/> 
         <link rel="stylesheet" href="css/validation.css" type="text/css" />
         <link rel="stylesheet" href="css/ue.css" type="text/css" />
         <link rel="stylesheet" href="css/maincss.css" type="text/css" />
@@ -150,10 +150,10 @@ for ($i = 1; $i <= sizeof($_SESSION['FINALEDT']) / 2; $i++) {
         
         
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
 
         <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"/>
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>          
