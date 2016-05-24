@@ -11,9 +11,9 @@ require_once ('semestre.php');
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <meta charset="UTF-8">
-            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc"/>
-            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA"/>
-            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"/>
+            <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik">
             <title>UPMC, Master Informatique : Saisie des voeux d'UE</title>
             <link rel="stylesheet" href="css/maincss.css" type="text/css" />
             <link rel="stylesheet" href="css/index.css" type="text/css" />
@@ -34,7 +34,7 @@ require_once ('semestre.php');
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> 
     </head>
 
-    <!-- note perso : ptetr rajouter des id et class aux fieldset pour affich en dispo block les msg_err -->
+   
     <body style="background-color:lightgrey;">
         <?php include("navbar_1.php"); ?>
         
@@ -43,7 +43,7 @@ require_once ('semestre.php');
     <div class="jumbotron">
       <div class="container">
         <h2><b>Site de choix d'UE du Master Informatique de l'UPMC.</b></h2>
-        <p>Ce site permet d'effectuer une pr&eacute-inscription p&eacutedagogique pour les &eacutetudiants de M1 Informatique de l'UPMC.</p>
+        <p>Ce site permet d'effectuer une pr&eacute;-inscription p&eacute;dagogique pour les &eacute;tudiants de M1 Informatique de l'UPMC.</p>
         <br/><br/>
 
         <div id="div_formI" class="form-inline" role="form" style="width:100%;">
@@ -55,7 +55,7 @@ require_once ('semestre.php');
                 sans recharger la page (conservation de l etat du formulaire)  -->
                 
                 
-                <fieldset> 
+                
                 <legend><b>Informations sur l'&eacute;tudiant</b></legend>
         
 

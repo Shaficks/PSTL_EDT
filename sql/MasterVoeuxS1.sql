@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
+-- version 4.4.3
 -- http://www.phpmyadmin.net
 --
--- Client :  127.0.0.1
--- Généré le :  Dim 13 Mars 2016 à 20:47
--- Version du serveur :  10.1.9-MariaDB
--- Version de PHP :  5.6.15
+-- Client :  localhost
+-- Généré le :  Ven 15 Mai 2015 à 14:41
+-- Version du serveur :  5.6.24
+-- Version de PHP :  5.6.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,19 +14,20 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
--- Base de données :  `mastervoeuxs1`
+-- Base de données :  `MasterVoeuxS1`
+-- Les Groupes sont automatiquement crees si ils n'existaient pas
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `androide`
+-- Structure de la table `ANDROIDE`
 --
 
-CREATE TABLE `androide` (
+CREATE TABLE IF NOT EXISTS `ANDROIDE` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -34,10 +35,10 @@ CREATE TABLE `androide` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `bim`
+-- Structure de la table `BIM`
 --
 
-CREATE TABLE `bim` (
+CREATE TABLE IF NOT EXISTS `BIM` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -45,15 +46,27 @@ CREATE TABLE `bim` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `dac`
+-- Structure de la table `DAC`
 --
 
-CREATE TABLE `dac` (
+CREATE TABLE IF NOT EXISTS `DAC` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+
+--
+-- Structure de la table `IMA`
+--
+
+CREATE TABLE IF NOT EXISTS `IMA` (
+  `numetu` int(11) NOT NULL,
+  `rang` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
 
 --
 -- Structure de la table `edt_ideal`
@@ -79,21 +92,10 @@ CREATE TABLE `edt_ideal` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ima`
+-- Structure de la table `ListeEtudiants`
 --
 
-CREATE TABLE `ima` (
-  `numetu` int(11) NOT NULL,
-  `rang` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `listeetudiants`
---
-
-CREATE TABLE `listeetudiants` (
+CREATE TABLE IF NOT EXISTS `ListeEtudiants` (
   `id` int(11) NOT NULL,
   `numero` int(11) NOT NULL,
   `nom` text NOT NULL,
@@ -118,10 +120,10 @@ CREATE TABLE `listeetudiants` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `master`
+-- Structure de la table `Master`
 --
 
-CREATE TABLE `master` (
+CREATE TABLE IF NOT EXISTS `Master` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -129,10 +131,10 @@ CREATE TABLE `master` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `res`
+-- Structure de la table `RES`
 --
 
-CREATE TABLE `res` (
+CREATE TABLE IF NOT EXISTS `RES` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -140,10 +142,10 @@ CREATE TABLE `res` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `sar`
+-- Structure de la table `SAR`
 --
 
-CREATE TABLE `sar` (
+CREATE TABLE IF NOT EXISTS `SAR` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -151,10 +153,10 @@ CREATE TABLE `sar` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `sesi`
+-- Structure de la table `SESI`
 --
 
-CREATE TABLE `sesi` (
+CREATE TABLE IF NOT EXISTS `SESI` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -162,10 +164,10 @@ CREATE TABLE `sesi` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `sfpn`
+-- Structure de la table `SFPN`
 --
 
-CREATE TABLE `sfpn` (
+CREATE TABLE IF NOT EXISTS `SFPN` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -173,10 +175,10 @@ CREATE TABLE `sfpn` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `stl`
+-- Structure de la table `STL`
 --
 
-CREATE TABLE `stl` (
+CREATE TABLE IF NOT EXISTS `STL` (
   `numetu` int(11) NOT NULL,
   `rang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -184,10 +186,10 @@ CREATE TABLE `stl` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `uegroupes`
+-- Structure de la table `UEGroupes`
 --
 
-CREATE TABLE `uegroupes` (
+CREATE TABLE IF NOT EXISTS `UEGroupes` (
   `groupe` varchar(10) NOT NULL,
   `effectif` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -197,75 +199,69 @@ CREATE TABLE `uegroupes` (
 --
 
 --
--- Index pour la table `androide`
+-- Index pour la table `ANDROIDE`
 --
-ALTER TABLE `androide`
+ALTER TABLE `ANDROIDE`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `bim`
+-- Index pour la table `BIM`
 --
-ALTER TABLE `bim`
+ALTER TABLE `BIM`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `dac`
+-- Index pour la table `DAC`
 --
-ALTER TABLE `dac`
+ALTER TABLE `DAC`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `edt_ideal`
+-- Index pour la table `IMA`
 --
-ALTER TABLE `edt_ideal`
-  ADD PRIMARY KEY (`numetu`);
-
---
--- Index pour la table `ima`
---
-ALTER TABLE `ima`
+ALTER TABLE `IMA`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `listeetudiants`
+-- Index pour la table `ListeEtudiants`
 --
-ALTER TABLE `listeetudiants`
+ALTER TABLE `ListeEtudiants`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `master`
+-- Index pour la table `Master`
 --
-ALTER TABLE `master`
+ALTER TABLE `Master`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `res`
+-- Index pour la table `RES`
 --
-ALTER TABLE `res`
+ALTER TABLE `RES`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `sar`
+-- Index pour la table `SAR`
 --
-ALTER TABLE `sar`
+ALTER TABLE `SAR`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `sesi`
+-- Index pour la table `SESI`
 --
-ALTER TABLE `sesi`
+ALTER TABLE `SESI`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `sfpn`
+-- Index pour la table `SFPN`
 --
-ALTER TABLE `sfpn`
+ALTER TABLE `SFPN`
   ADD PRIMARY KEY (`rang`);
 
 --
--- Index pour la table `stl`
+-- Index pour la table `STL`
 --
-ALTER TABLE `stl`
+ALTER TABLE `STL`
   ADD PRIMARY KEY (`rang`);
 
 --
@@ -273,59 +269,59 @@ ALTER TABLE `stl`
 --
 
 --
--- AUTO_INCREMENT pour la table `androide`
+-- AUTO_INCREMENT pour la table `ANDROIDE`
 --
-ALTER TABLE `androide`
+ALTER TABLE `ANDROIDE`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `bim`
+-- AUTO_INCREMENT pour la table `BIM`
 --
-ALTER TABLE `bim`
+ALTER TABLE `BIM`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `dac`
+-- AUTO_INCREMENT pour la table `DAC`
 --
-ALTER TABLE `dac`
+ALTER TABLE `DAC`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `ima`
+-- AUTO_INCREMENT pour la table `IMA`
 --
-ALTER TABLE `ima`
+ALTER TABLE `IMA`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `listeetudiants`
+-- AUTO_INCREMENT pour la table `ListeEtudiants`
 --
-ALTER TABLE `listeetudiants`
+ALTER TABLE `ListeEtudiants`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `master`
+-- AUTO_INCREMENT pour la table `Master`
 --
-ALTER TABLE `master`
+ALTER TABLE `Master`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `res`
+-- AUTO_INCREMENT pour la table `RES`
 --
-ALTER TABLE `res`
+ALTER TABLE `RES`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `sar`
+-- AUTO_INCREMENT pour la table `SAR`
 --
-ALTER TABLE `sar`
+ALTER TABLE `SAR`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `sesi`
+-- AUTO_INCREMENT pour la table `SESI`
 --
-ALTER TABLE `sesi`
+ALTER TABLE `SESI`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `sfpn`
+-- AUTO_INCREMENT pour la table `SFPN`
 --
-ALTER TABLE `sfpn`
+ALTER TABLE `SFPN`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `stl`
+-- AUTO_INCREMENT pour la table `STL`
 --
-ALTER TABLE `stl`
+ALTER TABLE `STL`
   MODIFY `rang` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

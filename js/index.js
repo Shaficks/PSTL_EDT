@@ -5,35 +5,39 @@
  * */
 
 //Get & Check formulaire Connexion
-function connect(formulaire) {
-    var num = formulaire.numetu.value.trim();
-    var vnum = formulaire.numetu2.value.trim(); //verification du numero etudiant : vnum
-    var nom = formulaire.nometu.value.trim();
-    var prenom = formulaire.prenometu.value.trim();
-    var mail = formulaire.email.value.trim();
-    var spe = formulaire.spe.value;
-    var redouble = document.getElementById("r2").checked; //est un redoublant 
-    var magister = document.getElementById("m2").checked; //postule pour un magistere(6 ues)
+        function connect(formulaire) {
+            var forbidenchars=/\W/g;  //The \W metacharacter is used to find a non-word character. 
+            //A word character is a character from a-z, A-Z, 0-9, including the _ (underscore) character.
+            //see http://dev.mysql.com/doc/refman/5.5/en/identifiers.html for more details
+            var num = formulaire.numetu.value.trim();
+            var vnum = formulaire.numetu2.value.trim(); //verification du numero etudiant : vnum
+            var nom = (formulaire.nometu.value.trim()).replace(forbidenchars, '_'); //suppr aussi les é à è ç ù , etc : pas terrible mais pas le choix
+            var prenom = (formulaire.prenometu.value.trim()).replace(forbidenchars, '_'); //suppr aussi les é à è ç ù , etc : pas terrible mais pas le choix
+            var mail = formulaire.email.value.trim();
+            var spe = formulaire.spe.value;
+            var redouble = document.getElementById("r2").checked; //est un redoublant 
+            var magister = document.getElementById("m2").checked; //postule pour un magistere(6 ues)
 
-    //Nombre d'ues (5:Pas de Magistere, 6:Magistere)(5 par defaut)  
-    var nbue = 5;
-    if(magister) nbue++;
+            //Nombre d'ues (5:Pas de Magistere, 6:Magistere)(5 par defaut)  
+            var nbue = 5;
+            if (magister)
+                nbue++;
 
-    /*alert("MsgFrom : Connect.js/connect,\n msg:{num=" + num + " vnum=" + vnum + " nbues=" + nbue +
-     " nom=" + nom + " prenom=" + prenom + " mail=" + mail + "\n\
-     spe=" + spe + " redouble=" + redouble + " magister=" + magister + "}");*/
+            /*alert("MsgFrom : Connect.js/connect,\n msg:{num=" + num + " vnum=" + vnum + " nbues=" + nbue +
+             " nom=" + nom + " prenom=" + prenom + " mail=" + mail + "\n\
+             spe=" + spe + " redouble=" + redouble + " magister=" + magister + "}");*/
 
-    var conform = verif_num(num) && verif_vnum(num, vnum)
-            && verif_text("nom", nom) && verif_text("prenom", prenom) && verif_mail(mail)
-            && verif_magistere(redouble, magister);
+            var conform = verif_num(num) && verif_vnum(num, vnum)
+                    && verif_text("nom", nom) && verif_text("prenom", prenom) && verif_mail(mail)
+                    && verif_magistere(redouble, magister);
 
-    if (conform) { //les entrees du formulaire sont toutes conformes
-        //redirection vers start_session avec les parametres utiles du formulaire 
-        window.location.href = "start_session.php?num=" + num + "&nom=" + nom + "&prenom=" + prenom + "&mail=" + mail +
-                "&spe=" + spe + "&redouble=" + redouble + "&magister=" + magister + "&nbue=" + nbue;
-    }
-    //alert("conform=" + conform);
-}
+            if (conform) { //les entrees du formulaire sont toutes conformes
+                //redirection vers start_session avec les parametres utiles du formulaire 
+                window.location.href = "start_session.php?num=" + num + "&nom=" + nom + "&prenom=" + prenom + "&mail=" + mail +
+                        "&spe=" + spe + "&redouble=" + redouble + "&magister=" + magister + "&nbue=" + nbue;
+            }
+            //alert("conform=" + conform);
+        }
 
 
 //Fonctions de verification de conformite du formulaire
@@ -75,7 +79,7 @@ function verif_text(desc, texte) {
 //Vérification redoublant et magistère (un étudiant ne peut être redoublant et candidat au parcours d'excellence)
 function verif_magistere(redouble, magistere) {
     if (!(redouble && magistere)) {
-        printHTML("#con_error_magistere",""); //remise a blanc du precedent message d'erreur eventuel
+        printHTML("#con_error_magistere", ""); //remise a blanc du precedent message d'erreur eventuel
         return true;
     }
     func_erreur_connexion("#con_error_magistere", "<font color='red'>Vous ne pouvez pas &ecirc;tre redoublant et candidat au parcours d'exellence.</font>");
@@ -92,7 +96,7 @@ function verif_mail(mail) {
     //Il ne sert a rien de verifier le nom de domaine car celui-ci peut etre imbrique(.keio.ac.jp est un nom de domaine valable et existant)
     //Mais (.fr.fr) ou (.f.f) sont tout aussi valables mais inexistants : nom@mailserver.fr.fr est accepte par le pattern mais inexistant
     //un mail de verification est envoye a chaque etudiant pour palier cette largesse.
-    if (mail.length > 4){
+    if (mail.length > 4) {
         printHTML("#con_error_email", ""); //remise a blanc du precedent message d'erreur eventuel.
         return true;
     }

@@ -47,7 +47,7 @@ function poids(l) {
     //alert("edt_utils/l : "+l); //Affichage format initial //debug
     var groupes = GRPES; //issu de la recup depuis la bd dans choix_ues.php et de forme : [algav1 =>5, Il2=>4] ou 5 est l'effectif du groupe algav1    
     l = bondAll(unbindAll(l)); //Maj format de l : dlp-1 -> dlp1 // pour directement "demaper"(recuperer l'effectif depuis) groupes
-    //console.log("l : " + l + "\nGRPES : " + JSON.stringify(GRPES));//Debug
+    console.log("l : " + l + "\nGRPES : " + JSON.stringify(GRPES));//Debug
 
     var capa = 25; //Max capacite groupe
     var pf = 1, geff = []; //pf: poids fin de l, geff:Tableau contenant les effectifs des groupes 

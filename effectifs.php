@@ -6,7 +6,7 @@ if (is_ajax()) {
     //$data = $_GET["gpes"]; //if data were sent
     //echo json_encode("$data"); //just for debug
 
-    $requete = mysql_query("SELECT * FROM uegroupes") or die(mysql_error());
+    $requete = mysql_query("SELECT * FROM UEGroupes") or die(mysql_error());
     $groupes = []; //Tableau qui contiendra les paires (groupe_ue => effectif) Exemple ( groupe : algav1, effectif : 30 )
     while ($donnees = mysql_fetch_array($requete))
         $groupes[$donnees['groupe']] = $donnees['effectif'];

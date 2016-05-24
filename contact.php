@@ -12,6 +12,7 @@ session_start();
         <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
             <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
             <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
+            <script src="js/jquery-latest.js"></script> <!-- copie locale de jquery(realisee en 2014) -->
 
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -30,9 +31,10 @@ session_start();
     <div class="jumbotron">
       <div class="container">  
    
-    <center><h3>  <b>Adresses mail et numéros des secrétariats du Master Informatique de l'UPMC</b></h3> </center><br/>
+    <center><h3>  <b>Adresses mail et num&eacute;ros des secr&eacute;tariats du Master Informatique de l'UPMC</b></h3> </center><br/>
     
-    <div style="display:inline-block;float:left;">
+    <div style="width:100%;">
+    <div style="display:inline-block;float:left;width:50%;">
     <fieldset>
      <legend><b>Sp&eacute;ciali&eacute; ANDROIDE</b></legend>
      <font size="4"><b>Secr&eacute;taire :</b> Nicole Nardy</font><br/>
@@ -61,7 +63,7 @@ session_start();
 
     <fieldset>
      <legend><b>Sp&eacute;ciali&eacute; IMA</b></legend>
-     <font size="4"><b>Secr&eacute;taire :</b>Géraldine Bompard</font><br/>
+     <font size="4"><b>Secr&eacute;taire :</b>G&eacute;raldine Bompard</font><br/>
      <font size="4"><b>T&eacute;l. :</b>01 44 27 62 05</font><br/>
      <font size="4"><b>Courriel :</b> master.info.ima@upmc.fr</font><br/>
     </fieldset>
@@ -75,7 +77,7 @@ session_start();
     </fieldset>
     </div>
 
-    <div style="display:inline-block;float:right;">
+    <div style="display:inline-block;float:right;width:50%">
     <fieldset>
      <legend><b>Sp&eacute;ciali&eacute; SAR</b></legend>
      <font size="4"><b>Secr&eacute;taire :</b>Mlle Ali&eacute;nor Le Conte</font><br/>
@@ -111,6 +113,7 @@ session_start();
     
       </div>
     </div>  
+    </div>
     </body>
 
 

@@ -29,10 +29,10 @@
             
             // Tableau coloré
             function FancyTableListeUEs($header, $data, $w) {
-                // Couleurs, épaisseur du trait et police grasse
-                $this->SetFillColor(255,0,0);
+                // Couleurs, épaisseur du trait et police grasse (Code RGB)
+                $this->SetFillColor(150,150,150);
                 $this->SetTextColor(255);
-                $this->SetDrawColor(128,0,0);
+                $this->SetDrawColor(0,0,0);
                 $this->SetLineWidth(.3);
                 $this->SetFont('','B');
                 
@@ -40,7 +40,7 @@
                 $this->Cell($w[$i],7,$header[$i],1,0,'C',true);
                 $this->Ln();
                 // Restauration des couleurs et de la police
-                $this->SetFillColor(224,235,255);
+                $this->SetFillColor(235,235,235);
                 $this->SetTextColor(0);
                 $this->SetFont('');
                 // Données
@@ -64,18 +64,18 @@
             
             // Tableau coloré
             function FancyTableEDT($header, $data, $w) {
-                // Couleurs, épaisseur du trait et police grasse
-                $this->SetFillColor(255,0,0);
+                // Couleurs, épaisseur du trait et police grasse (Code RGB)
+                $this->SetFillColor(150,150,150);
                 $this->SetTextColor(255);
-                $this->SetDrawColor(128,0,0);
+                $this->SetDrawColor(0,0,0);
                 $this->SetLineWidth(.3);
                 $this->SetFont('','B');
                 
                 for($i=0;$i<count($header);$i++)
                 $this->Cell($w[$i],7,$header[$i],1,0,'C',true);
                 $this->Ln();
-                // Restauration des couleurs et de la police
-                $this->SetFillColor(224,235,255);
+                // Restauration des couleurs et de la police (Code RGB)
+                $this->SetFillColor(235,235,235);
                 $this->SetTextColor(0);
                 $this->SetFont('');
                 // Données

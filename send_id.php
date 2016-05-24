@@ -24,7 +24,7 @@ function send_mail_etu() {
     //Parametres du mail
     $subject = "[Master Upmc voeux inscription M1] Verification d'email";
     $message = "Bonjour ". $_SESSION['prenom'].".<br/> Votre identifiant de session est : " . $_SESSION['ident'];
-    //Pour envoyer un mail HTML, l'en-tête Content-type doit être défini
+    //Pour envoyer un mail HTML, l'en-tête Content-type doit être defini
     $headers = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
     //En-têtes additionnels

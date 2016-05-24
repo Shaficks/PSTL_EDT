@@ -9,9 +9,9 @@ session_start();   //recuperation de la session
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
     <head>
         <meta charset="UTF-8"/>
-        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc"/>
-            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA"/>
-            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"/> 
+        <meta name="description" content="Inscriptions des etudiants au master informatique de l'Upmc">
+            <meta name="keywords" content="EDT,UPMC,MASTER,INFO,CHOIX,UE,ANAGBLA,NOUIRA">
+            <meta name="author" content="ANAGBLA Joan & NOUIRA Chafik"> 
             <title>UPMC, Master Informatique : Saisie des voeux d'UE</title>
             <link rel="stylesheet" href="css/maincss.css" type="text/css" />
             <link rel="stylesheet" href="css/saisie_identifiant.css" type="text/css" />
@@ -53,10 +53,10 @@ session_start();   //recuperation de la session
             </script>
             
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
         <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> 
